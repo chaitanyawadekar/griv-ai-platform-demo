@@ -2,9 +2,21 @@
 
 🎯 **Complete web-based demo of the Griv AI omni-channel operations automation platform**
 
+## 🌐 Live Demo
+
+**🔗 [View Live Demo](https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app)**
+
+## 📂 Repository
+
+**📁 GitHub Repository:** [chaitanyawadekar/griv-ai-platform-demo](https://github.com/chaitanyawadekar/griv-ai-platform-demo)
+
 ## 🚀 Quick Start
 
 ```bash
+# Clone repository
+git clone https://github.com/chaitanyawadekar/griv-ai-platform-demo.git
+cd griv-ai-platform-demo
+
 # Install dependencies
 npm install
 
@@ -173,9 +185,28 @@ The demo uses React's built-in state management:
 - Props drilling for data flow
 - Local state for modals
 
+## 🚀 Deployment
+
+### **Production Deployment**
+- **Platform**: Vercel
+- **Live URL**: [https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app](https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app)
+- **Auto-Deploy**: Enabled from `master` branch
+- **Build Command**: `react-scripts build`
+- **Framework**: React (Create React App)
+
+### **Repository Integration**
+- **GitHub**: [chaitanyawadekar/griv-ai-platform-demo](https://github.com/chaitanyawadekar/griv-ai-platform-demo)
+- **Branch**: `master`
+- **Auto-Deploy**: Every push triggers automatic deployment
+
 ## 📝 Recent Updates
 
-### **August 2024**
+### **August 2024 - v2.0**
+- ✅ **ShadCN Design System Implementation** - Replaced emoji icons with professional SVG icons
+- ✅ **Complete Griv AI Platform Rebuild** - Full-featured demo application
+- ✅ **Production Deployment** - Live on Vercel with auto-deploy from GitHub
+- ✅ **Repository Migration** - Moved to chaitanyawadekar/griv-ai-platform-demo
+- ✅ **Professional Icon System** - Clean, scalable SVG icons following ShadCN patterns
 - ✅ **Complete Team Management System** - Employee management with ACL permissions
 - ✅ **Add/Edit Employee Modals** - Full employee lifecycle management
 - ✅ **Multi-tenant Organization Switching** - Organization selector in header
@@ -259,17 +290,26 @@ REACT_APP_ENV=development
 - PWA capabilities
 - Offline support
 
+## 🔗 Links
+
+- **🌐 Live Demo**: [https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app](https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app)
+- **📁 GitHub Repository**: [https://github.com/chaitanyawadekar/griv-ai-platform-demo](https://github.com/chaitanyawadekar/griv-ai-platform-demo)
+- **🚀 Vercel Dashboard**: [https://vercel.com/chaitanyas-projects-9ea51a2a/web-demo](https://vercel.com/chaitanyas-projects-9ea51a2a/web-demo)
+
 ## 📚 Resources
 
 - [React Documentation](https://reactjs.org/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [ShadCN UI](https://ui.shadcn.com/)
 - [Create React App](https://create-react-app.dev/)
+- [Vercel Documentation](https://vercel.com/docs)
 
 ## 📄 License
 
-Proprietary - All rights reserved
+MIT License - See LICENSE file for details
 
 ---
 
-**Built with ❤️ for Griv AI Platform**
+**Built with ❤️ by [Chaitanya Wadekar](https://github.com/chaitanyawadekar)**
+
+**Powered by Griv AI Platform • React • TypeScript • ShadCN • Vercel**
