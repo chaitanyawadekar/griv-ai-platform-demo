@@ -33,7 +33,7 @@ export const TableBody: React.FC<TableBodyProps> = ({ children }) => {
   );
 };
 
-export const TableRow: React.FC<TableRowProps> = ({ children, onClick, style }) => {
+export const TableRow: React.FC<TableRowProps> = ({ children, onClick, style, onMouseEnter, onMouseLeave }) => {
   return (
     <tr
       onClick={onClick}
@@ -42,31 +42,34 @@ export const TableRow: React.FC<TableRowProps> = ({ children, onClick, style }) 
         cursor: onClick ? 'pointer' : 'default',
         ...style
       }}
-      onMouseEnter={(e) => {
-        if (onClick) {
+      onMouseEnter={onMouseEnter || ((e) => {
+        if (onClick && !onMouseEnter) {
           e.currentTarget.style.backgroundColor = theme.colors.muted;
         }
-      }}
-      onMouseLeave={(e) => {
-        if (onClick) {
+      })}
+      onMouseLeave={onMouseLeave || ((e) => {
+        if (onClick && !onMouseLeave) {
           e.currentTarget.style.backgroundColor = 'transparent';
         }
-      }}
+      })}
     >
       {children}
     </tr>
   );
 };
 
-export const TableHead: React.FC<TableHeadProps> = ({ children }) => {
+export const TableHead: React.FC<TableHeadProps> = ({ children, onClick, style }) => {
   return (
     <th
+      onClick={onClick}
       style={{
         padding: '0.75rem',
         textAlign: 'left',
         fontSize: '0.875rem',
         fontWeight: '600',
-        color: theme.colors.foreground
+        color: theme.colors.foreground,
+        cursor: onClick ? 'pointer' : 'default',
+        ...style
       }}
     >
       {children}
@@ -74,14 +77,16 @@ export const TableHead: React.FC<TableHeadProps> = ({ children }) => {
   );
 };
 
-export const TableCell: React.FC<TableCellProps> = ({ children, style }) => {
+export const TableCell: React.FC<TableCellProps> = ({ children, style, onClick }) => {
   return (
     <td
+      onClick={onClick}
       style={{
         padding: '0.75rem',
         fontSize: '0.875rem',
         color: theme.colors.foreground,
         verticalAlign: 'top',
+        cursor: onClick ? 'pointer' : 'default',
         ...style
       }}
     >

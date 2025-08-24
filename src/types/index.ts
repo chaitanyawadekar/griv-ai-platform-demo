@@ -225,6 +225,7 @@ export interface IconProps {
   name: string;
   size?: number;
   color?: string;
+  style?: React.CSSProperties;
 }
 
 export interface BadgeProps {
@@ -241,11 +242,14 @@ export interface TableRowProps {
   children: React.ReactNode;
   onClick?: () => void;
   style?: React.CSSProperties;
+  onMouseEnter?: (e: React.MouseEvent<HTMLTableRowElement>) => void;
+  onMouseLeave?: (e: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
 export interface TableCellProps {
   children?: React.ReactNode;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
 export interface TableHeaderProps {
@@ -254,6 +258,8 @@ export interface TableHeaderProps {
 
 export interface TableHeadProps {
   children: React.ReactNode;
+  onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export interface TableBodyProps {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconProps } from '../../types';
 
-export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentColor' }) => {
+export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentColor', style }) => {
   const iconMap: Record<string, React.ReactNode> = {
     dashboard: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -189,11 +189,6 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
         <line x1="21" x2="9" y1="12" y2="12"/>
       </svg>
     ),
-    'chevron-left': (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m15 18-6-6 6-6"/>
-      </svg>
-    ),
     sync: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 2v10l3-3m6 5a9 9 0 1 1-9-9"/>
@@ -268,6 +263,35 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
         <path d="M3 19h2"/>
         <path d="M11 19h10"/>
       </svg>
+    ),
+    chevronUp: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m18 15-6-6-6 6"/>
+      </svg>
+    ),
+    chevronRight: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m9 18 6-6-6-6"/>
+      </svg>
+    ),
+    chevronLeft: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+    ),
+    moreVertical: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="1"/>
+        <circle cx="12" cy="5" r="1"/>
+        <circle cx="12" cy="19" r="1"/>
+      </svg>
+    ),
+    moreHorizontal: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="1"/>
+        <circle cx="5" cy="12" r="1"/>
+        <circle cx="19" cy="12" r="1"/>
+      </svg>
     )
   };
 
@@ -279,7 +303,8 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
         display: 'inline-flex',
         width: `${size}px`,
         height: `${size}px`,
-        flexShrink: 0
+        flexShrink: 0,
+        ...style
       }}
     >
       {iconElement}

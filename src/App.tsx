@@ -15,6 +15,8 @@ import { Button, Icon, Modal } from './components/ui';
 import { SettingsScreen } from './components/screens/SettingsScreen';
 import { WorkitemDetailScreen } from './components/screens/WorkitemDetailScreen';
 import { WorkitemsScreen } from './components/screens/WorkitemsScreen';
+import { ContactsScreen } from './components/screens/ContactsScreen';
+import { ContactDetailScreen } from './components/screens/ContactDetailScreen';
 
 const App: React.FC = () => {
   // Navigation state
@@ -31,6 +33,10 @@ const App: React.FC = () => {
   // Workitem detail state
   const [selectedWorkitem, setSelectedWorkitem] = useState<Workitem | null>(null);
   const [showWorkitemDetail, setShowWorkitemDetail] = useState(false);
+
+  // Contact detail state
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [showContactDetail, setShowContactDetail] = useState(false);
 
   // Modal states
   const [showCreateSOP, setShowCreateSOP] = useState(false);
@@ -144,6 +150,28 @@ const App: React.FC = () => {
     setShowWorkitemDetail(false);
   };
 
+  // Contact management functions
+  const handleContactClick = (contact: Contact) => {
+    setSelectedContact(contact);
+    setShowContactDetail(true);
+  };
+
+  const handleContactUpdate = (updatedContact: Contact) => {
+    setContactsState(contactsState.map(c => 
+      c.id === updatedContact.id ? updatedContact : c
+    ));
+    setSelectedContact(updatedContact);
+  };
+
+  const handleBackToContacts = () => {
+    setSelectedContact(null);
+    setShowContactDetail(false);
+  };
+
+  const handleContactCreate = (newContact: Contact) => {
+    setContactsState([newContact, ...contactsState]);
+  };
+
   const navigationItems = [
     { id: 'dashboard' as Screen, label: 'Dashboard', icon: 'dashboard' },
     { id: 'workitems' as Screen, label: 'Workitems', icon: 'workitems' },
@@ -166,6 +194,25 @@ const App: React.FC = () => {
           onUpdate={handleWorkitemUpdate}
           onDelete={handleWorkitemDelete}
           onClose={handleWorkitemClose}
+        />
+      );
+    }
+
+    // Show contact detail if selected
+    if (showContactDetail && selectedContact) {
+      const getContactType = (typeName: string) => {
+        return contactTypes.find(t => t.name === typeName) || contactTypes[0];
+      };
+      
+      return (
+        <ContactDetailScreen
+          contact={selectedContact}
+          contactType={getContactType(selectedContact.type)}
+          theme={theme}
+          sops={sopsState}
+          employees={employeesState}
+          onBack={handleBackToContacts}
+          onContactUpdate={handleContactUpdate}
         />
       );
     }
@@ -202,6 +249,16 @@ const App: React.FC = () => {
             departments={departmentsState}
             onWorkitemClick={handleWorkitemClick}
             onCreateWorkitem={() => setShowCreateWorkitem(true)}
+          />
+        );
+      case 'contacts':
+        return (
+          <ContactsScreen
+            contacts={contactsState}
+            contactTypes={contactTypes}
+            theme={theme}
+            onContactClick={handleContactClick}
+            onContactCreate={handleContactCreate}
           />
         );
       case 'dashboard':
