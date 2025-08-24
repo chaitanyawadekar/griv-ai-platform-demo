@@ -24,6 +24,108 @@ const theme = {
   }
 };
 
+// ShadCN-style Table components
+const Table: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <div style={{
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: '8px',
+    overflow: 'hidden'
+  }}>
+    <table style={{
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: '0.875rem'
+    }} className={className}>
+      {children}
+    </table>
+  </div>
+);
+
+const TableHeader: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <thead style={{
+    backgroundColor: theme.colors.secondary
+  }}>
+    {children}
+  </thead>
+);
+
+const TableBody: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <tbody>{children}</tbody>
+);
+
+const TableRow: React.FC<{ children: React.ReactNode; onClick?: () => void }> = ({ children, onClick }) => (
+  <tr
+    style={{
+      borderBottom: `1px solid ${theme.colors.border}`,
+      cursor: onClick ? 'pointer' : 'default'
+    }}
+    onClick={onClick}
+    onMouseEnter={(e) => {
+      if (onClick) {
+        e.currentTarget.style.backgroundColor = theme.colors.secondary;
+      }
+    }}
+    onMouseLeave={(e) => {
+      if (onClick) {
+        e.currentTarget.style.backgroundColor = 'transparent';
+      }
+    }}
+  >
+    {children}
+  </tr>
+);
+
+const TableHead: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <th style={{
+    padding: '0.75rem 1rem',
+    textAlign: 'left',
+    fontWeight: '600',
+    color: theme.colors.foreground,
+    fontSize: '0.75rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
+  }} className={className}>
+    {children}
+  </th>
+);
+
+const TableCell: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <td style={{
+    padding: '0.75rem 1rem',
+    color: theme.colors.foreground
+  }} className={className}>
+    {children}
+  </td>
+);
+
+const Badge: React.FC<{ children: React.ReactNode; variant?: 'default' | 'success' | 'warning' | 'destructive' | 'secondary' }> = ({ 
+  children, 
+  variant = 'default' 
+}) => {
+  const variants = {
+    default: { backgroundColor: theme.colors.primary, color: theme.colors.primaryForeground },
+    success: { backgroundColor: theme.colors.success, color: theme.colors.primaryForeground },
+    warning: { backgroundColor: theme.colors.warning, color: theme.colors.primaryForeground },
+    destructive: { backgroundColor: theme.colors.destructive, color: theme.colors.primaryForeground },
+    secondary: { backgroundColor: theme.colors.secondary, color: theme.colors.foreground }
+  };
+
+  return (
+    <span style={{
+      ...variants[variant],
+      padding: '0.25rem 0.625rem',
+      fontSize: '0.75rem',
+      fontWeight: '500',
+      borderRadius: '9999px',
+      display: 'inline-flex',
+      alignItems: 'center',
+      textTransform: 'capitalize'
+    }}>
+      {children}
+    </span>
+  );
+};
+
 // ShadCN-style SVG Icon component
 const Icon: React.FC<{ name: string; size?: number; color?: string }> = ({ 
   name, 
@@ -79,8 +181,7 @@ const Icon: React.FC<{ name: string; size?: number; color?: string }> = ({
     settings: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3"/>
-        <path d="M12 1v6m0 6v6"/>
-        <path d="M1 12h6m6 0h6"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
       </svg>
     ),
     plus: (
@@ -181,6 +282,15 @@ const Icon: React.FC<{ name: string; size?: number; color?: string }> = ({
         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
         <polyline points="17,21 17,13 7,13 7,21"/>
         <polyline points="7,3 7,8 15,8"/>
+      </svg>
+    ),
+    fields: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+        <line x1="7" y1="7" x2="17" y2="7"/>
+        <line x1="7" y1="11" x2="17" y2="11"/>
       </svg>
     )
   };
@@ -416,7 +526,9 @@ const Input: React.FC<{
         backgroundColor: disabled ? theme.colors.secondary : theme.colors.card,
         color: theme.colors.foreground,
         outline: 'none',
-        transition: 'border-color 0.2s'
+        transition: 'border-color 0.2s',
+        boxSizing: 'border-box',
+        minWidth: 0
       }}
       onFocus={(e) => {
         e.target.style.borderColor = theme.colors.primary;
@@ -563,6 +675,17 @@ const App: React.FC = () => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
   const [showEditEmployee, setShowEditEmployee] = useState(false);
+  const [showAddWorkitemType, setShowAddWorkitemType] = useState(false);
+  const [showEditWorkitemType, setShowEditWorkitemType] = useState(false);
+  const [showAddContactType, setShowAddContactType] = useState(false);
+  const [showEditContactType, setShowEditContactType] = useState(false);
+  const [showAddCustomField, setShowAddCustomField] = useState(false);
+  const [showManageFields, setShowManageFields] = useState(false);
+  const [showEditField, setShowEditField] = useState(false);
+  const [selectedWorkitemType, setSelectedWorkitemType] = useState<any>(null);
+  const [selectedContactType, setSelectedContactType] = useState<any>(null);
+  const [selectedFieldType, setSelectedFieldType] = useState<'workitem' | 'contact'>('workitem');
+  const [selectedField, setSelectedField] = useState<any>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
   
   // Settings state
@@ -865,7 +988,35 @@ const App: React.FC = () => {
                 <div style={{ padding: '0.5rem 0' }}>
                   <button
                     onClick={() => {
-                      setShowSettings(true);
+                      console.log('Profile clicked');
+                      setShowUserMenu(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.5rem 0.75rem',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: theme.colors.foreground,
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      textAlign: 'left'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = theme.colors.secondary;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    <Icon name="user" size={16} />
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveScreen('settings');
                       setShowUserMenu(false);
                     }}
                     style={{
@@ -1197,7 +1348,7 @@ const App: React.FC = () => {
     );
   };
 
-  // Workitems Screen
+  // Workitems Screen with ShadCN-style Table
   const WorkitemsScreen = () => {
     const filteredWorkitems = workitems.filter(item => {
       const matchesSearch = searchTerm === '' || 
@@ -1209,6 +1360,25 @@ const App: React.FC = () => {
       
       return matchesSearch && matchesType && matchesStatus;
     });
+
+    const getStatusBadge = (status: string) => {
+      switch (status) {
+        case 'Open': return 'secondary';
+        case 'In Progress': return 'warning';
+        case 'Completed': return 'success';
+        case 'Closed': return 'default';
+        default: return 'secondary';
+      }
+    };
+
+    const getPriorityBadge = (priority: string) => {
+      switch (priority) {
+        case 'High': return 'destructive';
+        case 'Medium': return 'warning';
+        case 'Low': return 'success';
+        default: return 'secondary';
+      }
+    };
 
     return (
       <div style={{
@@ -1236,7 +1406,7 @@ const App: React.FC = () => {
               margin: 0,
               fontSize: '0.875rem'
             }}>
-              Manage leads, tasks, grievances, and follow-ups
+              Manage leads, tasks, grievances, and follow-ups ({filteredWorkitems.length} total)
             </p>
           </div>
           <Button onClick={() => setShowCreateWorkitem(true)}>
@@ -1338,182 +1508,117 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Workitems List */}
-        <div style={{
-          backgroundColor: theme.colors.card,
-          border: `1px solid ${theme.colors.border}`,
-          borderRadius: '12px',
-          overflow: 'hidden',
-          boxShadow: theme.shadow.sm
-        }}>
+        {/* ShadCN-style Data Table */}
+        {filteredWorkitems.length === 0 ? (
           <div style={{
-            padding: '1rem 1.5rem',
-            borderBottom: `1px solid ${theme.colors.border}`,
-            backgroundColor: theme.colors.secondary
+            backgroundColor: theme.colors.card,
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: '12px',
+            padding: '4rem 2rem',
+            textAlign: 'center',
+            boxShadow: theme.shadow.sm
           }}>
+            <Icon name="workitems" size={48} color={theme.colors.mutedForeground} />
             <h3 style={{
-              fontSize: '1rem',
+              fontSize: '1.125rem',
               fontWeight: '600',
               color: theme.colors.foreground,
-              margin: 0
+              margin: '1rem 0 0.5rem 0'
             }}>
-              {filteredWorkitems.length} Workitems Found
+              No workitems found
             </h3>
+            <p style={{
+              color: theme.colors.mutedForeground,
+              margin: 0,
+              fontSize: '0.875rem'
+            }}>
+              Try adjusting your search criteria or create a new workitem.
+            </p>
           </div>
-          <div style={{ padding: '1.5rem' }}>
-            {filteredWorkitems.length === 0 ? (
-              <div style={{
-                textAlign: 'center',
-                padding: '3rem',
-                color: theme.colors.mutedForeground
-              }}>
-                <Icon name="workitems" size={48} color={theme.colors.mutedForeground} />
-                <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
-                  No workitems found matching your criteria
-                </p>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {filteredWorkitems.map((item) => {
-                  const type = workitemTypes.find(t => t.name === item.type);
-                  return (
-                    <div
-                      key={item.id}
-                      style={{
-                        padding: '1.5rem',
-                        backgroundColor: theme.colors.secondary,
-                        borderRadius: '8px',
-                        border: `1px solid ${theme.colors.border}`,
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = theme.shadow.md;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        marginBottom: '1rem'
-                      }}>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.75rem'
-                        }}>
-                          {type && (
-                            <div style={{
-                              width: '40px',
-                              height: '40px',
-                              borderRadius: '8px',
-                              backgroundColor: `${type.color}20`,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
-                              <span style={{ fontSize: '1.25rem' }}>{type.icon}</span>
-                            </div>
-                          )}
-                          <div>
-                            <h4 style={{
-                              fontSize: '1.125rem',
-                              fontWeight: '600',
-                              color: theme.colors.foreground,
-                              margin: '0 0 0.25rem 0'
-                            }}>
-                              {item.title}
-                            </h4>
-                            <p style={{
-                              fontSize: '0.875rem',
-                              color: theme.colors.mutedForeground,
-                              margin: 0
-                            }}>
-                              {item.description}
-                            </p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Workitem</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Priority</TableHead>
+                <TableHead>Assignee</TableHead>
+                <TableHead>Due Date</TableHead>
+                <TableHead>Department</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredWorkitems.map((item) => {
+                const type = workitemTypes.find(t => t.name === item.type);
+                return (
+                  <TableRow key={item.id} onClick={() => console.log('View workitem:', item.id)}>
+                    <TableCell>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        {type && (
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '6px',
+                            backgroundColor: `${type.color}20`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1rem'
+                          }}>
+                            {type.icon}
+                          </div>
+                        )}
+                        <div>
+                          <div style={{
+                            fontWeight: '600',
+                            color: theme.colors.foreground,
+                            marginBottom: '0.25rem'
+                          }}>
+                            {item.title}
+                          </div>
+                          <div style={{
+                            fontSize: '0.75rem',
+                            color: theme.colors.mutedForeground
+                          }}>
+                            {item.description.length > 50 ? `${item.description.substring(0, 50)}...` : item.description}
                           </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <span style={{
-                            padding: '0.25rem 0.75rem',
-                            fontSize: '0.75rem',
-                            borderRadius: '12px',
-                            backgroundColor: item.priority === 'High' ? theme.colors.destructive : 
-                                           item.priority === 'Medium' ? theme.colors.warning : theme.colors.success,
-                            color: theme.colors.primaryForeground,
-                            fontWeight: '500'
-                          }}>
-                            {item.priority}
-                          </span>
-                          <span style={{
-                            padding: '0.25rem 0.75rem',
-                            fontSize: '0.75rem',
-                            borderRadius: '12px',
-                            backgroundColor: item.status === 'Open' ? theme.colors.info : 
-                                           item.status === 'In Progress' ? theme.colors.warning : theme.colors.success,
-                            color: theme.colors.primaryForeground,
-                            fontWeight: '500'
-                          }}>
-                            {item.status}
-                          </span>
-                        </div>
                       </div>
-                      <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: '1rem',
-                        fontSize: '0.875rem',
-                        color: theme.colors.mutedForeground
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="user" size={16} />
-                          <span>{item.assignee}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="building" size={16} />
-                          <span>{item.department}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="calendar" size={16} />
-                          <span>Due: {item.dueDate}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="clock" size={16} />
-                          <span>Created: {item.createdAt}</span>
-                        </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">{item.type}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusBadge(item.status) as any}>{item.status}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getPriorityBadge(item.priority) as any}>{item.priority}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Icon name="user" size={14} />
+                        {item.assignee}
                       </div>
-                      {item.tags && item.tags.length > 0 && (
-                        <div style={{
-                          marginTop: '1rem',
-                          display: 'flex',
-                          gap: '0.5rem',
-                          flexWrap: 'wrap'
-                        }}>
-                          {item.tags.map((tag, index) => (
-                            <span
-                              key={index}
-                              style={{
-                                padding: '0.25rem 0.5rem',
-                                fontSize: '0.75rem',
-                                borderRadius: '4px',
-                                backgroundColor: theme.colors.border,
-                                color: theme.colors.mutedForeground
-                              }}
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
+                    </TableCell>
+                    <TableCell>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Icon name="calendar" size={14} />
+                        {item.dueDate}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Icon name="building" size={14} />
+                        {item.department}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
       </div>
     );
   };
@@ -1632,7 +1737,6 @@ const App: React.FC = () => {
         {/* Contacts List */}
         <div style={{
           backgroundColor: theme.colors.card,
-          border: `1px solid ${theme.colors.border}`,
           borderRadius: '12px',
           overflow: 'hidden',
           boxShadow: theme.shadow.sm
@@ -1651,45 +1755,40 @@ const App: React.FC = () => {
               {filteredContacts.length} Contacts Found
             </h3>
           </div>
-          <div style={{ padding: '1.5rem' }}>
-            {filteredContacts.length === 0 ? (
-              <div style={{
-                textAlign: 'center',
-                padding: '3rem',
-                color: theme.colors.mutedForeground
-              }}>
-                <Icon name="contacts" size={48} color={theme.colors.mutedForeground} />
-                <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
-                  No contacts found matching your criteria
-                </p>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {filteredContacts.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '3rem',
+              color: theme.colors.mutedForeground
+            }}>
+              <Icon name="contacts" size={48} color={theme.colors.mutedForeground} />
+              <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
+                No contacts found matching your criteria
+              </p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Contact</TableHead>
+                  <TableHead>Tags</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filteredContacts.map((contact) => {
                   const type = contactTypes.find(t => t.name === contact.type);
                   return (
-                    <div
-                      key={contact.id}
-                      style={{
-                        padding: '1.5rem',
-                        backgroundColor: theme.colors.secondary,
-                        borderRadius: '8px',
-                        border: `1px solid ${theme.colors.border}`,
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = theme.shadow.md;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
+                    <TableRow 
+                      key={contact.id} 
+                      onClick={() => {}}
                     >
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        marginBottom: '1rem'
-                      }}>
+                      <TableCell>
                         <div style={{
                           display: 'flex',
                           alignItems: 'center',
@@ -1697,99 +1796,139 @@ const App: React.FC = () => {
                         }}>
                           {type && (
                             <div style={{
-                              width: '48px',
-                              height: '48px',
+                              width: '32px',
+                              height: '32px',
                               borderRadius: '50%',
                               backgroundColor: `${type.color}20`,
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'center'
+                              justifyContent: 'center',
+                              flexShrink: 0
                             }}>
-                              <span style={{ fontSize: '1.5rem' }}>{type.icon}</span>
+                              <Icon name="user" size={14} color={type.color} />
                             </div>
                           )}
-                          <div>
-                            <h4 style={{
-                              fontSize: '1.125rem',
-                              fontWeight: '600',
+                          <div style={{ minWidth: 0 }}>
+                            <div style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '500',
                               color: theme.colors.foreground,
-                              margin: '0 0 0.25rem 0'
+                              lineHeight: '1.25'
                             }}>
                               {contact.name}
-                            </h4>
-                            <p style={{
-                              fontSize: '0.875rem',
+                            </div>
+                            <div style={{
+                              fontSize: '0.75rem',
                               color: theme.colors.mutedForeground,
-                              margin: 0
+                              lineHeight: '1.25'
                             }}>
                               {contact.type}
-                            </p>
+                            </div>
                           </div>
                         </div>
-                        <span style={{
-                          padding: '0.25rem 0.75rem',
-                          fontSize: '0.75rem',
-                          borderRadius: '12px',
-                          backgroundColor: contact.status === 'Active' ? theme.colors.success : theme.colors.border,
-                          color: contact.status === 'Active' ? theme.colors.primaryForeground : theme.colors.mutedForeground,
-                          fontWeight: '500'
-                        }}>
-                          {contact.status}
-                        </span>
-                      </div>
-                      <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: '1rem',
-                        fontSize: '0.875rem',
-                        color: theme.colors.mutedForeground
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="phone" size={16} />
-                          <span>{contact.phone}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="email" size={16} />
-                          <span>{contact.email}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="location" size={16} />
-                          <span>{contact.location}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <Icon name="clock" size={16} />
-                          <span>Last contact: {contact.lastContact}</span>
-                        </div>
-                      </div>
-                      {contact.tags && contact.tags.length > 0 && (
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {contact.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
                         <div style={{
-                          marginTop: '1rem',
                           display: 'flex',
+                          alignItems: 'center',
                           gap: '0.5rem',
-                          flexWrap: 'wrap'
+                          fontSize: '0.875rem'
                         }}>
-                          {contact.tags.map((tag, index) => (
-                            <span
-                              key={index}
-                              style={{
-                                padding: '0.25rem 0.5rem',
-                                fontSize: '0.75rem',
-                                borderRadius: '4px',
-                                backgroundColor: theme.colors.border,
-                                color: theme.colors.mutedForeground
-                              }}
-                            >
-                              #{tag}
-                            </span>
-                          ))}
+                          <Icon name="phone" size={14} color={theme.colors.mutedForeground} />
+                          {contact.phone}
                         </div>
-                      )}
-                    </div>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          fontSize: '0.875rem'
+                        }}>
+                          <Icon name="email" size={14} color={theme.colors.mutedForeground} />
+                          {contact.email}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          fontSize: '0.875rem'
+                        }}>
+                          <Icon name="location" size={14} color={theme.colors.mutedForeground} />
+                          {contact.location}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={contact.status === 'Active' ? 'success' : 'secondary'}>
+                          {contact.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          fontSize: '0.875rem',
+                          color: theme.colors.mutedForeground
+                        }}>
+                          <Icon name="clock" size={14} color={theme.colors.mutedForeground} />
+                          {contact.lastContact}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {contact.tags && contact.tags.length > 0 ? (
+                          <div style={{
+                            display: 'flex',
+                            gap: '0.25rem',
+                            flexWrap: 'wrap',
+                            maxWidth: '150px'
+                          }}>
+                            {contact.tags.slice(0, 2).map((tag, index) => (
+                              <span
+                                key={index}
+                                style={{
+                                  padding: '0.125rem 0.375rem',
+                                  fontSize: '0.625rem',
+                                  borderRadius: '4px',
+                                  backgroundColor: theme.colors.border,
+                                  color: theme.colors.mutedForeground,
+                                  whiteSpace: 'nowrap'
+                                }}
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                            {contact.tags.length > 2 && (
+                              <span style={{
+                                fontSize: '0.625rem',
+                                color: theme.colors.mutedForeground
+                              }}>
+                                +{contact.tags.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span style={{
+                            fontSize: '0.75rem',
+                            color: theme.colors.mutedForeground
+                          }}>
+                            —
+                          </span>
+                        )}
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </div>
-            )}
-          </div>
+              </TableBody>
+            </Table>
+          )}
         </div>
       </div>
     );
@@ -2443,6 +2582,7 @@ const App: React.FC = () => {
   const SettingsModal = () => {
     const settingsTabs = [
       { id: 'general', label: 'General', icon: 'settings' },
+      { id: 'fields', label: 'Field Configuration', icon: 'fields' },
       { id: 'team', label: 'Team Management', icon: 'team' },
       { id: 'integrations', label: 'Integrations', icon: 'integration' },
       { id: 'notifications', label: 'Notifications', icon: 'bell' },
@@ -2462,12 +2602,14 @@ const App: React.FC = () => {
         }
         size="xl"
       >
-        <div style={{ display: 'flex', gap: '2rem', minHeight: '500px' }}>
+        <div style={{ display: 'flex', gap: '2rem', height: '600px', overflow: 'hidden' }}>
           {/* Settings Navigation */}
           <div style={{
             minWidth: '200px',
+            maxWidth: '200px',
             borderRight: `1px solid ${theme.colors.border}`,
-            paddingRight: '1rem'
+            paddingRight: '1rem',
+            overflowY: 'auto'
           }}>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
               {settingsTabs.map((tab) => (
@@ -2509,7 +2651,12 @@ const App: React.FC = () => {
           </div>
 
           {/* Settings Content */}
-          <div style={{ flex: 1 }}>
+          <div style={{ 
+            flex: 1, 
+            overflowY: 'auto',
+            paddingRight: '0.5rem',
+            maxHeight: '100%'
+          }}>
             {settingsTab === 'general' && (
               <div style={{ display: 'grid', gap: '1.5rem' }}>
                 <h3 style={{
@@ -2538,9 +2685,101 @@ const App: React.FC = () => {
                       placeholder="Enter organization name"
                     />
                   </div>
+
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Organization Type
+                    </label>
+                    <select
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        boxSizing: 'border-box',
+                        minWidth: 0
+                      }}
+                    >
+                      <option>Government</option>
+                      <option>NGO</option>
+                      <option>Private Company</option>
+                      <option>Educational Institution</option>
+                      <option>Healthcare</option>
+                      <option>Non-Profit</option>
+                      <option>Consulting</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', 
+                    gap: '1rem' 
+                  }}>
+                    <div style={{ minWidth: 0 }}>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Contact Email
+                      </label>
+                      <Input
+                        type="email"
+                        value="contact@demo.org"
+                        onChange={() => {}}
+                        placeholder="Enter contact email"
+                      />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Contact Phone Number
+                      </label>
+                      <Input
+                        type="tel"
+                        value="+91-9876543210"
+                        onChange={() => {}}
+                        placeholder="Enter contact phone"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      GST Details <span style={{ color: theme.colors.mutedForeground, fontWeight: '400' }}>(Optional)</span>
+                    </label>
+                    <Input
+                      value=""
+                      onChange={() => {}}
+                      placeholder="Enter GST number (e.g., 22AAAAA0000A1Z5)"
+                    />
+                  </div>
                   
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem' }}>
+                    <div style={{ minWidth: 0 }}>
                       <label style={{
                         display: 'block',
                         fontSize: '0.875rem',
@@ -2558,7 +2797,9 @@ const App: React.FC = () => {
                           borderRadius: '8px',
                           backgroundColor: theme.colors.card,
                           color: theme.colors.foreground,
-                          fontSize: '0.875rem'
+                          fontSize: '0.875rem',
+                          boxSizing: 'border-box',
+                          minWidth: 0
                         }}
                       >
                         <option>Asia/Kolkata (IST)</option>
@@ -2566,7 +2807,7 @@ const App: React.FC = () => {
                         <option>America/New_York (EST)</option>
                       </select>
                     </div>
-                    <div>
+                    <div style={{ minWidth: 0 }}>
                       <label style={{
                         display: 'block',
                         fontSize: '0.875rem',
@@ -2584,15 +2825,244 @@ const App: React.FC = () => {
                           borderRadius: '8px',
                           backgroundColor: theme.colors.card,
                           color: theme.colors.foreground,
-                          fontSize: '0.875rem'
+                          fontSize: '0.875rem',
+                          boxSizing: 'border-box',
+                          minWidth: 0
                         }}
                       >
                         <option>English</option>
                         <option>हिंदी (Hindi)</option>
                         <option>বাংলা (Bengali)</option>
-                        <option>తెలుగు (Telugu)</option>
+                        <option>తెলుগు (Telugu)</option>
                       </select>
                     </div>
+                  </div>
+
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'flex-end', 
+                    gap: '0.75rem',
+                    paddingTop: '1rem',
+                    borderTop: `1px solid ${theme.colors.border}`
+                  }}>
+                    <Button variant="secondary">
+                      Cancel
+                    </Button>
+                    <Button>
+                      <Icon name="save" size={16} color={theme.colors.primaryForeground} />
+                      Save Changes
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'fields' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  Field Configuration
+                </h3>
+
+                {/* Workitem Types Section */}
+                <div style={{
+                  backgroundColor: theme.colors.secondary,
+                  borderRadius: '8px',
+                  padding: '1.5rem',
+                  border: `1px solid ${theme.colors.border}`
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      color: theme.colors.foreground,
+                      margin: 0
+                    }}>
+                      Workitem Types ({workitemTypes.length})
+                    </h4>
+                    <Button size="sm" onClick={() => setShowAddWorkitemType(true)}>
+                      <Icon name="plus" size={14} color={theme.colors.primaryForeground} />
+                      Add Type
+                    </Button>
+                  </div>
+                  <div style={{ display: 'grid', gap: '0.75rem' }}>
+                    {workitemTypes.map((type) => (
+                      <div
+                        key={type.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '1rem',
+                          backgroundColor: theme.colors.card,
+                          borderRadius: '6px',
+                          border: `1px solid ${theme.colors.border}`
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '6px',
+                            backgroundColor: `${type.color}20`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Icon name="workitems" size={16} color={type.color} />
+                          </div>
+                          <div>
+                            <h5 style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '600',
+                              color: theme.colors.foreground,
+                              margin: 0
+                            }}>
+                              {type.name}
+                            </h5>
+                            <p style={{
+                              fontSize: '0.75rem',
+                              color: theme.colors.mutedForeground,
+                              margin: 0
+                            }}>
+                              {type.name === 'Lead' ? 'Sales leads and opportunities' :
+                               type.name === 'Task' ? 'Internal tasks and assignments' :
+                               type.name === 'Grievance' ? 'Customer complaints and issues' :
+                               'Follow-up activities and reminders'}
+                            </p>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <Button variant="secondary" size="sm" onClick={() => {
+                            setSelectedWorkitemType(type);
+                            setSelectedFieldType('workitem');
+                            setShowManageFields(true);
+                          }}>
+                            <Icon name="fields" size={14} />
+                            Manage Fields
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            setSelectedWorkitemType(type);
+                            setShowEditWorkitemType(true);
+                          }}>
+                            <Icon name="edit" size={14} />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            console.log('Delete workitem type:', type.name);
+                          }}>
+                            <Icon name="delete" size={14} color={theme.colors.destructive} />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Contact Types Section */}
+                <div style={{
+                  backgroundColor: theme.colors.secondary,
+                  borderRadius: '8px',
+                  padding: '1.5rem',
+                  border: `1px solid ${theme.colors.border}`
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      color: theme.colors.foreground,
+                      margin: 0
+                    }}>
+                      Contact Types ({contactTypes.length})
+                    </h4>
+                    <Button size="sm" onClick={() => setShowAddContactType(true)}>
+                      <Icon name="plus" size={14} color={theme.colors.primaryForeground} />
+                      Add Type
+                    </Button>
+                  </div>
+                  <div style={{ display: 'grid', gap: '0.75rem' }}>
+                    {contactTypes.map((type) => (
+                      <div
+                        key={type.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '1rem',
+                          backgroundColor: theme.colors.card,
+                          borderRadius: '6px',
+                          border: `1px solid ${theme.colors.border}`
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '6px',
+                            backgroundColor: `${type.color}20`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Icon name="contacts" size={16} color={type.color} />
+                          </div>
+                          <div>
+                            <h5 style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '600',
+                              color: theme.colors.foreground,
+                              margin: 0
+                            }}>
+                              {type.name}
+                            </h5>
+                            <p style={{
+                              fontSize: '0.75rem',
+                              color: theme.colors.mutedForeground,
+                              margin: 0
+                            }}>
+                              {type.name === 'Customer' ? 'Business customers and clients' :
+                               type.name === 'Voter' ? 'Electoral constituency members' :
+                               type.name === 'Influencer' ? 'Key stakeholders and leaders' :
+                               'Business partners and vendors'}
+                            </p>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <Button variant="secondary" size="sm" onClick={() => {
+                            setSelectedContactType(type);
+                            setSelectedFieldType('contact');
+                            setShowManageFields(true);
+                          }}>
+                            <Icon name="fields" size={14} />
+                            Manage Fields
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            setSelectedContactType(type);
+                            setShowEditContactType(true);
+                          }}>
+                            <Icon name="edit" size={14} />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            console.log('Delete contact type:', type.name);
+                          }}>
+                            <Icon name="delete" size={14} color={theme.colors.destructive} />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -3001,6 +3471,823 @@ const App: React.FC = () => {
     );
   };
 
+  // Settings Screen (converted from modal)
+  const SettingsScreen = () => {
+    const settingsTabs = [
+      { id: 'general', label: 'General', icon: 'settings' },
+      { id: 'fields', label: 'Field Configuration', icon: 'fields' },
+      { id: 'team', label: 'Team Management', icon: 'team' },
+      { id: 'integrations', label: 'Integrations', icon: 'integration' },
+      { id: 'notifications', label: 'Notifications', icon: 'bell' },
+      { id: 'security', label: 'Security', icon: 'shield' },
+      { id: 'billing', label: 'Billing', icon: 'star' }
+    ];
+
+    return (
+      <div style={{
+        padding: '2rem',
+        minHeight: 'calc(100vh - 120px)',
+        backgroundColor: theme.colors.background
+      }}>
+        {/* Header */}
+        <div style={{
+          marginBottom: '2rem',
+          borderBottom: `1px solid ${theme.colors.border}`,
+          paddingBottom: '1rem'
+        }}>
+          <h1 style={{
+            fontSize: '2rem',
+            fontWeight: '700',
+            color: theme.colors.foreground,
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem'
+          }}>
+            <Icon name="settings" size={32} color={theme.colors.primary} />
+            Settings
+          </h1>
+          <p style={{
+            fontSize: '1rem',
+            color: theme.colors.mutedForeground,
+            margin: '0.5rem 0 0 0'
+          }}>
+            Manage your organization settings and preferences
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '2rem', minHeight: '600px' }}>
+          {/* Settings Navigation */}
+          <div style={{
+            minWidth: '240px',
+            maxWidth: '240px',
+            backgroundColor: theme.colors.card,
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: '12px',
+            padding: '1.5rem',
+            height: 'fit-content'
+          }}>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              {settingsTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSettingsTab(tab.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '0.875rem',
+                    border: 'none',
+                    backgroundColor: settingsTab === tab.id ? theme.colors.primary : 'transparent',
+                    color: settingsTab === tab.id ? theme.colors.primaryForeground : theme.colors.foreground,
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    textAlign: 'left',
+                    width: '100%',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (settingsTab !== tab.id) {
+                      e.currentTarget.style.backgroundColor = theme.colors.secondary;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (settingsTab !== tab.id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                >
+                  <Icon name={tab.icon} size={18} />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Settings Content */}
+          <div style={{ 
+            flex: 1,
+            backgroundColor: theme.colors.card,
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: '12px',
+            padding: '2rem'
+          }}>
+            {settingsTab === 'general' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  General Settings
+                </h3>
+                
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Organization Name
+                    </label>
+                    <Input
+                      value="Demo Organization"
+                      onChange={() => {}}
+                      placeholder="Enter organization name"
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Organization Type
+                    </label>
+                    <select
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        boxSizing: 'border-box',
+                        minWidth: 0
+                      }}
+                    >
+                      <option>Government</option>
+                      <option>NGO</option>
+                      <option>Private Company</option>
+                      <option>Educational Institution</option>
+                      <option>Healthcare</option>
+                      <option>Non-Profit</option>
+                      <option>Consulting</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', 
+                    gap: '1rem' 
+                  }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Time Zone
+                      </label>
+                      <select
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem',
+                          border: `1px solid ${theme.colors.border}`,
+                          borderRadius: '8px',
+                          backgroundColor: theme.colors.card,
+                          color: theme.colors.foreground,
+                          fontSize: '0.875rem',
+                          boxSizing: 'border-box',
+                          minWidth: 0
+                        }}
+                      >
+                        <option>Asia/Kolkata (GMT+5:30)</option>
+                        <option>America/New_York (GMT-5:00)</option>
+                        <option>Europe/London (GMT+0:00)</option>
+                        <option>Asia/Dubai (GMT+4:00)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Language
+                      </label>
+                      <select
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem',
+                          border: `1px solid ${theme.colors.border}`,
+                          borderRadius: '8px',
+                          backgroundColor: theme.colors.card,
+                          color: theme.colors.foreground,
+                          fontSize: '0.875rem',
+                          boxSizing: 'border-box',
+                          minWidth: 0
+                        }}
+                      >
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>Bengali</option>
+                        <option>Tamil</option>
+                        <option>Telugu</option>
+                        <option>Marathi</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Currency
+                    </label>
+                    <select
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        boxSizing: 'border-box',
+                        minWidth: 0
+                      }}
+                    >
+                      <option>INR (₹)</option>
+                      <option>USD ($)</option>
+                      <option>EUR (€)</option>
+                      <option>GBP (£)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'fields' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  Field Configuration
+                </h3>
+
+                {/* Workitem Types Section */}
+                <div style={{
+                  backgroundColor: theme.colors.secondary,
+                  borderRadius: '8px',
+                  padding: '1.5rem',
+                  border: `1px solid ${theme.colors.border}`
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      color: theme.colors.foreground,
+                      margin: 0
+                    }}>
+                      Workitem Types ({workitemTypes.length})
+                    </h4>
+                    <Button size="sm" onClick={() => setShowAddWorkitemType(true)}>
+                      <Icon name="plus" size={14} color={theme.colors.primaryForeground} />
+                      Add Type
+                    </Button>
+                  </div>
+                  <div style={{ display: 'grid', gap: '0.75rem' }}>
+                    {workitemTypes.map((type) => (
+                      <div
+                        key={type.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '1rem',
+                          backgroundColor: theme.colors.card,
+                          borderRadius: '6px',
+                          border: `1px solid ${theme.colors.border}`
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '6px',
+                            backgroundColor: `${type.color}20`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Icon name="workitems" size={16} color={type.color} />
+                          </div>
+                          <div>
+                            <h5 style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '600',
+                              color: theme.colors.foreground,
+                              margin: 0
+                            }}>
+                              {type.name}
+                            </h5>
+                            <p style={{
+                              fontSize: '0.75rem',
+                              color: theme.colors.mutedForeground,
+                              margin: 0
+                            }}>
+                              {type.name === 'Lead' ? 'Sales leads and opportunities' :
+                               type.name === 'Task' ? 'Internal tasks and assignments' :
+                               type.name === 'Grievance' ? 'Customer complaints and issues' :
+                               'Follow-up activities and reminders'}
+                            </p>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <Button variant="secondary" size="sm" onClick={() => {
+                            setSelectedWorkitemType(type);
+                            setSelectedFieldType('workitem');
+                            setShowManageFields(true);
+                          }}>
+                            <Icon name="fields" size={14} />
+                            Manage Fields
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            setSelectedWorkitemType(type);
+                            setShowEditWorkitemType(true);
+                          }}>
+                            <Icon name="edit" size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Contact Types Section */}
+                <div style={{
+                  backgroundColor: theme.colors.secondary,
+                  borderRadius: '8px',
+                  padding: '1.5rem',
+                  border: `1px solid ${theme.colors.border}`
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      color: theme.colors.foreground,
+                      margin: 0
+                    }}>
+                      Contact Types ({contactTypes.length})
+                    </h4>
+                    <Button size="sm" onClick={() => setShowAddContactType(true)}>
+                      <Icon name="plus" size={14} color={theme.colors.primaryForeground} />
+                      Add Type
+                    </Button>
+                  </div>
+                  <div style={{ display: 'grid', gap: '0.75rem' }}>
+                    {contactTypes.map((type) => (
+                      <div
+                        key={type.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '1rem',
+                          backgroundColor: theme.colors.card,
+                          borderRadius: '6px',
+                          border: `1px solid ${theme.colors.border}`
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '6px',
+                            backgroundColor: `${type.color}20`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Icon name="contacts" size={16} color={type.color} />
+                          </div>
+                          <div>
+                            <h5 style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '600',
+                              color: theme.colors.foreground,
+                              margin: 0
+                            }}>
+                              {type.name}
+                            </h5>
+                            <p style={{
+                              fontSize: '0.75rem',
+                              color: theme.colors.mutedForeground,
+                              margin: 0
+                            }}>
+                              {type.name === 'Customer' ? 'Service customers and clients' :
+                               type.name === 'Voter' ? 'Citizens and constituents' :
+                               type.name === 'Influencer' ? 'Key stakeholders and leaders' :
+                               'Business partners and vendors'}
+                            </p>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <Button variant="secondary" size="sm" onClick={() => {
+                            setSelectedContactType(type);
+                            setSelectedFieldType('contact');
+                            setShowManageFields(true);
+                          }}>
+                            <Icon name="fields" size={14} />
+                            Manage Fields
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            setSelectedContactType(type);
+                            setShowEditContactType(true);
+                          }}>
+                            <Icon name="edit" size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'team' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    color: theme.colors.foreground,
+                    margin: 0
+                  }}>
+                    Team Management
+                  </h3>
+                  <Button onClick={() => setShowAddEmployee(true)}>
+                    <Icon name="plus" size={16} color={theme.colors.primaryForeground} />
+                    Add Employee
+                  </Button>
+                </div>
+
+                {/* Employee Table */}
+                <div style={{
+                  backgroundColor: theme.colors.card,
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  boxShadow: theme.shadow.sm
+                }}>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Employee</TableHead>
+                        <TableHead>Department</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Permissions</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {employees.map((employee) => (
+                        <TableRow key={employee.id}>
+                          <TableCell>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <div style={{
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '50%',
+                                backgroundColor: theme.colors.primary,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: theme.colors.primaryForeground,
+                                fontSize: '0.875rem',
+                                fontWeight: '600'
+                              }}>
+                                {employee.name.charAt(0)}
+                              </div>
+                              <div>
+                                <div style={{
+                                  fontSize: '0.875rem',
+                                  fontWeight: '500',
+                                  color: theme.colors.foreground
+                                }}>
+                                  {employee.name}
+                                </div>
+                                <div style={{
+                                  fontSize: '0.75rem',
+                                  color: theme.colors.mutedForeground
+                                }}>
+                                  {employee.email}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {employee.department}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <span style={{ fontSize: '0.875rem' }}>
+                              {employee.role}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                              {employee.permissions.map((permission) => (
+                                <span
+                                  key={permission}
+                                  style={{
+                                    fontSize: '0.7rem',
+                                    padding: '0.125rem 0.25rem',
+                                    borderRadius: '4px',
+                                    backgroundColor: theme.colors.secondary,
+                                    color: theme.colors.foreground,
+                                    border: `1px solid ${theme.colors.border}`
+                                  }}
+                                >
+                                  {permission}
+                                </span>
+                              ))}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={employee.status === 'Active' ? 'success' : 'secondary'}>
+                              {employee.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div style={{ display: 'flex', gap: '0.25rem' }}>
+                              <Button variant="ghost" size="sm" onClick={() => {
+                                setSelectedEmployee(employee);
+                                setShowEditEmployee(true);
+                              }}>
+                                <Icon name="edit" size={14} />
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => {
+                                console.log('Remove employee:', employee.name);
+                              }}>
+                                <Icon name="delete" size={14} color={theme.colors.destructive} />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'integrations' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  Integrations
+                </h3>
+                <p style={{
+                  color: theme.colors.mutedForeground,
+                  margin: 0
+                }}>
+                  Connect third-party services and APIs
+                </p>
+                <div style={{
+                  display: 'grid',
+                  gap: '1rem'
+                }}>
+                  {[
+                    { name: 'WhatsApp Business', icon: 'integration', status: 'Connected', color: theme.colors.success },
+                    { name: 'SMS Gateway', icon: 'integration', status: 'Connected', color: theme.colors.success },
+                    { name: 'Email Service', icon: 'integration', status: 'Disconnected', color: theme.colors.destructive },
+                    { name: 'Voice Calls', icon: 'integration', status: 'Pending Setup', color: theme.colors.mutedForeground }
+                  ].map((integration) => (
+                    <div
+                      key={integration.name}
+                      style={{
+                        padding: '1rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.secondary,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <Icon name={integration.icon} size={20} color={theme.colors.primary} />
+                        <div>
+                          <div style={{
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: theme.colors.foreground
+                          }}>
+                            {integration.name}
+                          </div>
+                        </div>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          color: integration.color,
+                          fontWeight: '500'
+                        }}
+                      >
+                        {integration.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'notifications' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  Notification Preferences
+                </h3>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  {[
+                    { label: 'New workitem assignments', checked: true },
+                    { label: 'Contact status updates', checked: true },
+                    { label: 'Workflow completions', checked: false },
+                    { label: 'System maintenance alerts', checked: true },
+                    { label: 'Daily summary reports', checked: false }
+                  ].map((item, index) => (
+                    <label
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.secondary,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        defaultChecked={item.checked}
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          accentColor: theme.colors.primary
+                        }}
+                      />
+                      <span style={{
+                        fontSize: '0.875rem',
+                        color: theme.colors.foreground
+                      }}>
+                        {item.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'security' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  Security Settings
+                </h3>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  <div>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      margin: '0 0 0.5rem 0'
+                    }}>
+                      Authentication
+                    </h4>
+                    <Button>Change Password</Button>
+                  </div>
+                  <div>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      margin: '0 0 0.5rem 0'
+                    }}>
+                      Two-Factor Authentication
+                    </h4>
+                    <Button variant="secondary">Enable 2FA</Button>
+                  </div>
+                  <div>
+                    <h4 style={{
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      margin: '0 0 0.5rem 0'
+                    }}>
+                      Data Export
+                    </h4>
+                    <Button variant="secondary">Export All Data</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {settingsTab === 'billing' && (
+              <div style={{ display: 'grid', gap: '1.5rem' }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  Billing & Usage
+                </h3>
+                <div style={{
+                  padding: '1.5rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '8px',
+                  backgroundColor: theme.colors.secondary
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <div>
+                      <h4 style={{
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        color: theme.colors.foreground,
+                        margin: 0
+                      }}>
+                        Current Plan
+                      </h4>
+                      <p style={{
+                        fontSize: '0.875rem',
+                        color: theme.colors.mutedForeground,
+                        margin: '0.25rem 0 0 0'
+                      }}>
+                        Professional
+                      </p>
+                    </div>
+                  </div>
+                  <Button style={{ marginTop: '1rem' }}>
+                    <Icon name="star" size={16} color={theme.colors.primaryForeground} />
+                    Upgrade Plan
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // AI Chat Modal
   const AIChatModal = () => {
     const [messages, setMessages] = useState([
@@ -3128,6 +4415,1391 @@ const App: React.FC = () => {
             Tokens remaining: {currentUser.tokenBalance.toLocaleString()} • Each message uses ~10-50 tokens
           </div>
         </div>
+      </Modal>
+    );
+  };
+
+  // Add Workitem Type Modal
+  const AddWorkitemTypeModal = () => {
+    const [formData, setFormData] = useState({
+      name: '',
+      description: '',
+      color: '#3b82f6'
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('Adding workitem type:', formData);
+      setShowAddWorkitemType(false);
+      setFormData({ name: '', description: '', color: '#3b82f6' });
+    };
+
+    if (!showAddWorkitemType) return null;
+
+    return (
+      <Modal
+        show={showAddWorkitemType}
+        onClose={() => setShowAddWorkitemType(false)}
+        title="Add Workitem Type"
+        size="md"
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Type Name
+              </label>
+              <Input
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter type name"
+                required
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Description
+              </label>
+              <Input
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Enter type description"
+                required
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Color
+              </label>
+              <input
+                type="color"
+                value={formData.color}
+                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                style={{
+                  width: '100%',
+                  height: '40px',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '8px',
+                  backgroundColor: theme.colors.card,
+                  cursor: 'pointer'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem', 
+            justifyContent: 'flex-end',
+            marginTop: '1.5rem'
+          }}>
+            <Button type="button" variant="secondary" onClick={() => setShowAddWorkitemType(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              <Icon name="plus" size={16} color={theme.colors.primaryForeground} />
+              Add Type
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    );
+  };
+
+  // Edit Workitem Type Modal
+  const EditWorkitemTypeModal = () => {
+    const [formData, setFormData] = useState(selectedWorkitemType || {});
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('Updating workitem type:', formData);
+      setShowEditWorkitemType(false);
+    };
+
+    if (!showEditWorkitemType || !selectedWorkitemType) return null;
+
+    return (
+      <Modal
+        show={showEditWorkitemType}
+        onClose={() => setShowEditWorkitemType(false)}
+        title="Edit Workitem Type"
+        size="md"
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Type Name
+              </label>
+              <Input
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter type name"
+                required
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Color
+              </label>
+              <input
+                type="color"
+                value={formData.color || '#3b82f6'}
+                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                style={{
+                  width: '100%',
+                  height: '40px',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '8px',
+                  backgroundColor: theme.colors.card,
+                  cursor: 'pointer'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem', 
+            justifyContent: 'flex-end',
+            marginTop: '1.5rem'
+          }}>
+            <Button type="button" variant="secondary" onClick={() => setShowEditWorkitemType(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              <Icon name="save" size={16} color={theme.colors.primaryForeground} />
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    );
+  };
+
+  // Add Contact Type Modal
+  const AddContactTypeModal = () => {
+    const [formData, setFormData] = useState({
+      name: '',
+      description: '',
+      color: '#3b82f6'
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('Adding contact type:', formData);
+      setShowAddContactType(false);
+      setFormData({ name: '', description: '', color: '#3b82f6' });
+    };
+
+    if (!showAddContactType) return null;
+
+    return (
+      <Modal
+        show={showAddContactType}
+        onClose={() => setShowAddContactType(false)}
+        title="Add Contact Type"
+        size="md"
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Type Name
+              </label>
+              <Input
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter type name"
+                required
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Description
+              </label>
+              <Input
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Enter type description"
+                required
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Color
+              </label>
+              <input
+                type="color"
+                value={formData.color}
+                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                style={{
+                  width: '100%',
+                  height: '40px',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '8px',
+                  backgroundColor: theme.colors.card,
+                  cursor: 'pointer'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem', 
+            justifyContent: 'flex-end',
+            marginTop: '1.5rem'
+          }}>
+            <Button type="button" variant="secondary" onClick={() => setShowAddContactType(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              <Icon name="plus" size={16} color={theme.colors.primaryForeground} />
+              Add Type
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    );
+  };
+
+  // Edit Contact Type Modal
+  const EditContactTypeModal = () => {
+    const [formData, setFormData] = useState(selectedContactType || {});
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('Updating contact type:', formData);
+      setShowEditContactType(false);
+    };
+
+    if (!showEditContactType || !selectedContactType) return null;
+
+    return (
+      <Modal
+        show={showEditContactType}
+        onClose={() => setShowEditContactType(false)}
+        title="Edit Contact Type"
+        size="md"
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Type Name
+              </label>
+              <Input
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter type name"
+                required
+              />
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Color
+              </label>
+              <input
+                type="color"
+                value={formData.color || '#3b82f6'}
+                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                style={{
+                  width: '100%',
+                  height: '40px',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '8px',
+                  backgroundColor: theme.colors.card,
+                  cursor: 'pointer'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem', 
+            justifyContent: 'flex-end',
+            marginTop: '1.5rem'
+          }}>
+            <Button type="button" variant="secondary" onClick={() => setShowEditContactType(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              <Icon name="save" size={16} color={theme.colors.primaryForeground} />
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    );
+  };
+
+  // Manage Fields Modal
+  const ManageFieldsModal = () => {
+    const currentType = selectedFieldType === 'workitem' ? selectedWorkitemType : selectedContactType;
+    
+    // Sample fields data for demonstration
+    const sampleFields = selectedFieldType === 'workitem' && selectedWorkitemType?.name === 'Lead' ? [
+      {
+        id: 1,
+        name: 'Lead Score',
+        fieldKey: 'lead_score',
+        description: 'Numerical score for lead quality assessment (0-100)',
+        type: 'number',
+        required: true,
+        defaultValue: '0',
+        validation: { minValue: '0', maxValue: '100' }
+      },
+      {
+        id: 2,
+        name: 'Lead Source',
+        fieldKey: 'lead_source',
+        description: 'How this lead was acquired',
+        type: 'select',
+        required: false,
+        defaultValue: 'Website',
+        validation: { selectOptions: 'Website\nReferral\nCold Call\nSocial Media\nEmail Campaign' }
+      }
+    ] : selectedFieldType === 'contact' && selectedContactType?.name === 'Customer' ? [
+      {
+        id: 3,
+        name: 'Annual Revenue',
+        fieldKey: 'annual_revenue',
+        description: 'Expected or actual annual revenue from customer',
+        type: 'currency',
+        required: false,
+        defaultValue: '',
+        validation: { minValue: '0' }
+      },
+      {
+        id: 4,
+        name: 'Industry',
+        fieldKey: 'industry',
+        description: 'Customer business industry',
+        type: 'select',
+        required: true,
+        defaultValue: '',
+        validation: { selectOptions: 'Technology\nHealthcare\nFinance\nManufacturing\nRetail\nEducation\nOther' }
+      }
+    ] : [];
+
+    if (!showManageFields || !currentType) return null;
+
+    return (
+      <Modal
+        show={showManageFields}
+        onClose={() => setShowManageFields(false)}
+        title={`Manage Fields - ${currentType.name} ${selectedFieldType === 'workitem' ? 'Workitems' : 'Contacts'}`}
+        size="xl"
+      >
+        <div style={{ display: 'grid', gap: '1.5rem' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground,
+                margin: 0
+              }}>
+                Custom Fields for {currentType.name} {selectedFieldType === 'workitem' ? 'Workitems' : 'Contacts'}
+              </h4>
+              <p style={{
+                fontSize: '0.875rem',
+                color: theme.colors.mutedForeground,
+                margin: '0.25rem 0 0 0'
+              }}>
+                Configure custom fields that will appear when creating or editing {currentType.name.toLowerCase()} {selectedFieldType === 'workitem' ? 'workitems' : 'contacts'}
+              </p>
+            </div>
+            <Button onClick={() => setShowAddCustomField(true)}>
+              <Icon name="plus" size={16} color={theme.colors.primaryForeground} />
+              Add Field
+            </Button>
+          </div>
+
+          {sampleFields.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '3rem',
+              color: theme.colors.mutedForeground,
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '8px',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              <Icon name="fields" size={48} color={theme.colors.mutedForeground} />
+              <h5 style={{ 
+                margin: '1rem 0 0.5rem 0', 
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground
+              }}>
+                No Custom Fields
+              </h5>
+              <p style={{ margin: 0, fontSize: '0.875rem' }}>
+                Start by adding custom fields for {currentType.name} {selectedFieldType === 'workitem' ? 'workitems' : 'contacts'}
+              </p>
+            </div>
+          ) : (
+            <div style={{
+              backgroundColor: theme.colors.card,
+              borderRadius: '12px',
+              overflow: 'hidden',
+              boxShadow: theme.shadow.sm
+            }}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Field Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Validation</TableHead>
+                    <TableHead>Default</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sampleFields.map((field) => (
+                    <TableRow key={field.id}>
+                      <TableCell>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <div style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: field.required ? theme.colors.destructive : theme.colors.mutedForeground
+                          }}></div>
+                          <div>
+                            <div style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '500',
+                              color: theme.colors.foreground
+                            }}>
+                              {field.name}
+                            </div>
+                            <div style={{
+                              fontSize: '0.75rem',
+                              color: theme.colors.mutedForeground
+                            }}>
+                              {field.fieldKey}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ fontSize: '0.875rem', maxWidth: '200px' }}>
+                          {field.description}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={
+                          field.type === 'number' ? 'secondary' :
+                          field.type === 'currency' ? 'success' :
+                          field.type === 'select' ? 'warning' :
+                          'default'
+                        }>
+                          {field.type.charAt(0).toUpperCase() + field.type.slice(1)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ fontSize: '0.75rem', color: theme.colors.mutedForeground }}>
+                          {field.type === 'number' || field.type === 'currency' ? (
+                            <>
+                              {'minValue' in field.validation && field.validation.minValue && `Min: ${field.validation.minValue}`}
+                              {'maxValue' in field.validation && field.validation.maxValue && `, Max: ${field.validation.maxValue}`}
+                              <br/>
+                              {field.required ? 'Required' : 'Optional'}
+                            </>
+                          ) : field.type === 'select' ? (
+                            <>
+                              Options: {field.validation?.selectOptions?.split('\n').slice(0, 2).join(', ')}
+                              {field.validation?.selectOptions && field.validation.selectOptions.split('\n').length > 2 && '...'}
+                              <br/>
+                              {field.required ? 'Required' : 'Optional'}
+                            </>
+                          ) : (
+                            field.required ? 'Required' : 'Optional'
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span style={{ fontSize: '0.875rem' }}>
+                          {field.defaultValue || '—'}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ display: 'flex', gap: '0.25rem' }}>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            setSelectedField(field);
+                            setShowEditField(true);
+                          }}>
+                            <Icon name="edit" size={14} />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => {
+                            console.log('Delete field:', field.name);
+                          }}>
+                            <Icon name="delete" size={14} color={theme.colors.destructive} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
+      </Modal>
+    );
+  };
+
+  // Edit Field Modal
+  const EditFieldModal = () => {
+    const [formData, setFormData] = useState(selectedField || {
+      name: '',
+      fieldKey: '',
+      description: '',
+      type: 'text',
+      required: false,
+      defaultValue: '',
+      validation: {
+        minLength: '',
+        maxLength: '',
+        minValue: '',
+        maxValue: '',
+        pattern: '',
+        selectOptions: ''
+      }
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('Updating field:', formData);
+      setShowEditField(false);
+    };
+
+    if (!showEditField || !selectedField) return null;
+
+    return (
+      <Modal
+        show={showEditField}
+        onClose={() => setShowEditField(false)}
+        title="Edit Field"
+        size="lg"
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gap: '1.5rem' }}>
+            {/* Basic Information */}
+            <div style={{
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '8px',
+              padding: '1rem',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground,
+                margin: '0 0 1rem 0'
+              }}>
+                Basic Information
+              </h4>
+              
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Field Name
+                    </label>
+                    <Input
+                      value={formData.name || ''}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="e.g., Lead Score"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Field Key
+                    </label>
+                    <Input
+                      value={formData.fieldKey || ''}
+                      onChange={(e) => setFormData({ ...formData, fieldKey: e.target.value })}
+                      placeholder="e.g., lead_score"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: theme.colors.foreground,
+                    marginBottom: '0.5rem'
+                  }}>
+                    Description
+                  </label>
+                  <textarea
+                    value={formData.description || ''}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Describe what this field is used for..."
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: `1px solid ${theme.colors.border}`,
+                      borderRadius: '8px',
+                      backgroundColor: theme.colors.card,
+                      color: theme.colors.foreground,
+                      fontSize: '0.875rem',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                      minHeight: '80px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'end' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Field Type
+                    </label>
+                    <select
+                      value={formData.type || 'text'}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      <option value="text">Text</option>
+                      <option value="textarea">Text Area</option>
+                      <option value="number">Number</option>
+                      <option value="email">Email</option>
+                      <option value="phone">Phone</option>
+                      <option value="date">Date</option>
+                      <option value="datetime">Date & Time</option>
+                      <option value="currency">Currency</option>
+                      <option value="percentage">Percentage</option>
+                      <option value="url">URL</option>
+                      <option value="select">Dropdown</option>
+                      <option value="multiselect">Multi-Select</option>
+                      <option value="checkbox">Checkbox</option>
+                      <option value="radio">Radio Buttons</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      cursor: 'pointer',
+                      padding: '0.75rem 0'
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={formData.required || false}
+                        onChange={(e) => setFormData({ ...formData, required: e.target.checked })}
+                        style={{ margin: 0 }}
+                      />
+                      Required Field
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Default Value and Validation - simplified for space */}
+            <div style={{
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '8px',
+              padding: '1rem',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground,
+                margin: '0 0 1rem 0'
+              }}>
+                Default Value & Validation
+              </h4>
+              
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: theme.colors.foreground,
+                    marginBottom: '0.5rem'
+                  }}>
+                    Default Value
+                  </label>
+                  <Input
+                    value={formData.defaultValue || ''}
+                    onChange={(e) => setFormData({ ...formData, defaultValue: e.target.value })}
+                    placeholder="Enter default value"
+                  />
+                </div>
+
+                {(formData.type === 'select' || formData.type === 'multiselect' || formData.type === 'radio') && (
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Options (one per line)
+                    </label>
+                    <textarea
+                      value={formData.validation?.selectOptions || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        validation: { ...formData.validation, selectOptions: e.target.value }
+                      })}
+                      placeholder="Low&#10;Medium&#10;High&#10;Critical"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        fontFamily: 'inherit',
+                        resize: 'vertical',
+                        minHeight: '120px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                )}
+
+                {(formData.type === 'number' || formData.type === 'currency' || formData.type === 'percentage') && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Minimum Value
+                      </label>
+                      <Input
+                        type="number"
+                        value={formData.validation?.minValue || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          validation: { ...formData.validation, minValue: e.target.value }
+                        })}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Maximum Value
+                      </label>
+                      <Input
+                        type="number"
+                        value={formData.validation?.maxValue || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          validation: { ...formData.validation, maxValue: e.target.value }
+                        })}
+                        placeholder="100"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem', 
+            justifyContent: 'flex-end',
+            marginTop: '1.5rem'
+          }}>
+            <Button type="button" variant="secondary" onClick={() => setShowEditField(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              <Icon name="save" size={16} color={theme.colors.primaryForeground} />
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    );
+  };
+
+  // Add Custom Field Modal
+  const AddCustomFieldModal = () => {
+    const [formData, setFormData] = useState({
+      name: '',
+      fieldKey: '',
+      description: '',
+      type: 'text',
+      required: false,
+      appliedTo: 'workitem',
+      defaultValue: '',
+      validation: {
+        minLength: '',
+        maxLength: '',
+        minValue: '',
+        maxValue: '',
+        pattern: '',
+        selectOptions: ''
+      }
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('Adding custom field:', formData);
+      setShowAddCustomField(false);
+      setFormData({
+        name: '',
+        fieldKey: '',
+        description: '',
+        type: 'text',
+        required: false,
+        appliedTo: 'workitem',
+        defaultValue: '',
+        validation: {
+          minLength: '',
+          maxLength: '',
+          minValue: '',
+          maxValue: '',
+          pattern: '',
+          selectOptions: ''
+        }
+      });
+    };
+
+    const generateFieldKey = (name: string) => {
+      return name.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+    };
+
+    if (!showAddCustomField) return null;
+
+    return (
+      <Modal
+        show={showAddCustomField}
+        onClose={() => setShowAddCustomField(false)}
+        title="Add Custom Field"
+        size="lg"
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gap: '1.5rem' }}>
+            {/* Basic Information */}
+            <div style={{
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '8px',
+              padding: '1rem',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground,
+                margin: '0 0 1rem 0'
+              }}>
+                Basic Information
+              </h4>
+              
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Field Name
+                    </label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => {
+                        const name = e.target.value;
+                        setFormData({ 
+                          ...formData, 
+                          name,
+                          fieldKey: generateFieldKey(name)
+                        });
+                      }}
+                      placeholder="e.g., Lead Score"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Field Key
+                    </label>
+                    <Input
+                      value={formData.fieldKey}
+                      onChange={(e) => setFormData({ ...formData, fieldKey: e.target.value })}
+                      placeholder="e.g., lead_score"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: theme.colors.foreground,
+                    marginBottom: '0.5rem'
+                  }}>
+                    Description
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Describe what this field is used for..."
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: `1px solid ${theme.colors.border}`,
+                      borderRadius: '8px',
+                      backgroundColor: theme.colors.card,
+                      color: theme.colors.foreground,
+                      fontSize: '0.875rem',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                      minHeight: '80px',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Field Type
+                    </label>
+                    <select
+                      value={formData.type}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      <option value="text">Text</option>
+                      <option value="textarea">Text Area</option>
+                      <option value="number">Number</option>
+                      <option value="email">Email</option>
+                      <option value="phone">Phone</option>
+                      <option value="date">Date</option>
+                      <option value="datetime">Date & Time</option>
+                      <option value="currency">Currency</option>
+                      <option value="percentage">Percentage</option>
+                      <option value="url">URL</option>
+                      <option value="select">Dropdown</option>
+                      <option value="multiselect">Multi-Select</option>
+                      <option value="checkbox">Checkbox</option>
+                      <option value="radio">Radio Buttons</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Applied To
+                    </label>
+                    <select
+                      value={formData.appliedTo}
+                      onChange={(e) => setFormData({ ...formData, appliedTo: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      <option value="workitem">Workitems</option>
+                      <option value="contact">Contacts</option>
+                      <option value="both">Both</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: theme.colors.foreground,
+                    cursor: 'pointer'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.required}
+                      onChange={(e) => setFormData({ ...formData, required: e.target.checked })}
+                      style={{ margin: 0 }}
+                    />
+                    Required Field
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Default Value */}
+            <div style={{
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '8px',
+              padding: '1rem',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground,
+                margin: '0 0 1rem 0'
+              }}>
+                Default Value
+              </h4>
+              
+              <div>
+                <Input
+                  value={formData.defaultValue}
+                  onChange={(e) => setFormData({ ...formData, defaultValue: e.target.value })}
+                  placeholder={
+                    formData.type === 'select' || formData.type === 'multiselect' ? 
+                    'Enter default option' :
+                    formData.type === 'date' ? 'YYYY-MM-DD or "today"' :
+                    formData.type === 'number' ? 'Enter default number' :
+                    'Enter default value'
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Validation Rules */}
+            <div style={{
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '8px',
+              padding: '1rem',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              <h4 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: theme.colors.foreground,
+                margin: '0 0 1rem 0'
+              }}>
+                Validation Rules
+              </h4>
+              
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                {(formData.type === 'text' || formData.type === 'textarea') && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Minimum Length
+                      </label>
+                      <Input
+                        type="number"
+                        value={formData.validation.minLength}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          validation: { ...formData.validation, minLength: e.target.value }
+                        })}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Maximum Length
+                      </label>
+                      <Input
+                        type="number"
+                        value={formData.validation.maxLength}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          validation: { ...formData.validation, maxLength: e.target.value }
+                        })}
+                        placeholder="255"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {(formData.type === 'number' || formData.type === 'currency' || formData.type === 'percentage') && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Minimum Value
+                      </label>
+                      <Input
+                        type="number"
+                        value={formData.validation.minValue}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          validation: { ...formData.validation, minValue: e.target.value }
+                        })}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: theme.colors.foreground,
+                        marginBottom: '0.5rem'
+                      }}>
+                        Maximum Value
+                      </label>
+                      <Input
+                        type="number"
+                        value={formData.validation.maxValue}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          validation: { ...formData.validation, maxValue: e.target.value }
+                        })}
+                        placeholder="100"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {(formData.type === 'select' || formData.type === 'multiselect' || formData.type === 'radio') && (
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Options (one per line)
+                    </label>
+                    <textarea
+                      value={formData.validation.selectOptions}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        validation: { ...formData.validation, selectOptions: e.target.value }
+                      })}
+                      placeholder="Low&#10;Medium&#10;High&#10;Critical"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: `1px solid ${theme.colors.border}`,
+                        borderRadius: '8px',
+                        backgroundColor: theme.colors.card,
+                        color: theme.colors.foreground,
+                        fontSize: '0.875rem',
+                        fontFamily: 'inherit',
+                        resize: 'vertical',
+                        minHeight: '120px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                )}
+
+                {formData.type === 'text' && (
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: theme.colors.foreground,
+                      marginBottom: '0.5rem'
+                    }}>
+                      Pattern (Regular Expression)
+                    </label>
+                    <Input
+                      value={formData.validation.pattern}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        validation: { ...formData.validation, pattern: e.target.value }
+                      })}
+                      placeholder="e.g., ^[A-Z]{2}[0-9]{6}$ for ID format"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem', 
+            justifyContent: 'flex-end',
+            marginTop: '1.5rem'
+          }}>
+            <Button type="button" variant="secondary" onClick={() => setShowAddCustomField(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              <Icon name="plus" size={16} color={theme.colors.primaryForeground} />
+              Add Field
+            </Button>
+          </div>
+        </form>
       </Modal>
     );
   };
@@ -3616,6 +6288,8 @@ const App: React.FC = () => {
         return <ContactsScreen />;
       case 'workflows':
         return <WorkflowsScreen />;
+      case 'settings':
+        return <SettingsScreen />;
       default:
         return <DashboardScreen />;
     }
@@ -3642,8 +6316,14 @@ const App: React.FC = () => {
       {/* Modals */}
       <CreateWorkitemModal />
       <CreateContactModal />
-      <SettingsModal />
       <AIChatModal />
+      <AddWorkitemTypeModal />
+      <EditWorkitemTypeModal />
+      <AddContactTypeModal />
+      <EditContactTypeModal />
+      <AddCustomFieldModal />
+      <ManageFieldsModal />
+      <EditFieldModal />
       <AddEmployeeModal />
       <EditEmployeeModal />
 
