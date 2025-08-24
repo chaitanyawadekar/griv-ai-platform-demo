@@ -12,6 +12,7 @@ import { sops, employees, departments, sampleWorkitems, sampleContacts, workitem
 import { Button, Icon, Modal } from './components/ui';
 
 // Import screen components
+import { OverviewScreen } from './components/screens/OverviewScreen';
 import { SettingsScreen } from './components/screens/SettingsScreen';
 import { WorkitemDetailScreen } from './components/screens/WorkitemDetailScreen';
 import { WorkitemsScreen } from './components/screens/WorkitemsScreen';
@@ -20,7 +21,7 @@ import { ContactDetailScreen } from './components/screens/ContactDetailScreen';
 
 const App: React.FC = () => {
   // Navigation state
-  const [activeScreen, setActiveScreen] = useState<Screen>('dashboard');
+  const [activeScreen, setActiveScreen] = useState<Screen>('overview');
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Data state
@@ -173,7 +174,7 @@ const App: React.FC = () => {
   };
 
   const navigationItems = [
-    { id: 'dashboard' as Screen, label: 'Dashboard', icon: 'dashboard' },
+    { id: 'overview' as Screen, label: 'Overview', icon: 'overview' },
     { id: 'workitems' as Screen, label: 'Workitems', icon: 'workitems' },
     { id: 'contacts' as Screen, label: 'Contacts', icon: 'contacts' },
     { id: 'analytics' as Screen, label: 'Analytics', icon: 'analytics' }
@@ -261,123 +262,9 @@ const App: React.FC = () => {
             onContactCreate={handleContactCreate}
           />
         );
-      case 'dashboard':
+      case 'overview':
       default:
-        return (
-          <div style={{
-            padding: '2rem',
-            backgroundColor: theme.colors.background,
-            minHeight: 'calc(100vh - 64px)'
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '2rem'
-            }}>
-              <div>
-                <h1 style={{
-                  fontSize: '2rem',
-                  fontWeight: '700',
-                  color: theme.colors.foreground,
-                  margin: '0 0 0.5rem 0'
-                }}>
-                  Dashboard
-                </h1>
-                <p style={{
-                  color: theme.colors.mutedForeground,
-                  margin: 0,
-                  fontSize: '0.875rem'
-                }}>
-                  Welcome to your Griv AI Platform dashboard
-                </p>
-              </div>
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <Button onClick={() => setShowCreateWorkitem(true)}>
-                  <Icon name="plus" size={16} color={theme.colors.primaryForeground} />
-                  Create Workitem
-                </Button>
-                <Button onClick={() => setShowCreateContact(true)} variant="outline">
-                  <Icon name="plus" size={16} />
-                  Add Contact
-                </Button>
-              </div>
-            </div>
-
-            {/* Dashboard content */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '1.5rem'
-            }}>
-              <div style={{
-                backgroundColor: theme.colors.card,
-                padding: '1.5rem',
-                borderRadius: '12px',
-                border: `1px solid ${theme.colors.border}`
-              }}>
-                <h3 style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: theme.colors.foreground,
-                  margin: '0 0 1rem 0'
-                }}>
-                  Recent Workitems
-                </h3>
-                <p style={{
-                  color: theme.colors.mutedForeground,
-                  margin: 0
-                }}>
-                  {workitemsState.length} active workitems
-                </p>
-              </div>
-
-              <div style={{
-                backgroundColor: theme.colors.card,
-                padding: '1.5rem',
-                borderRadius: '12px',
-                border: `1px solid ${theme.colors.border}`
-              }}>
-                <h3 style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: theme.colors.foreground,
-                  margin: '0 0 1rem 0'
-                }}>
-                  Contacts
-                </h3>
-                <p style={{
-                  color: theme.colors.mutedForeground,
-                  margin: 0
-                }}>
-                  {contactsState.length} total contacts
-                </p>
-              </div>
-
-              <div style={{
-                backgroundColor: theme.colors.card,
-                padding: '1.5rem',
-                borderRadius: '12px',
-                border: `1px solid ${theme.colors.border}`
-              }}>
-                <h3 style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: theme.colors.foreground,
-                  margin: '0 0 1rem 0'
-                }}>
-                  Active SOPs
-                </h3>
-                <p style={{
-                  color: theme.colors.mutedForeground,
-                  margin: 0
-                }}>
-                  {sopsState.filter(sop => sop.status === 'active').length} active procedures
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+        return <OverviewScreen theme={theme} />;
     }
   };
 
@@ -385,7 +272,8 @@ const App: React.FC = () => {
     <div style={{
       minHeight: '100vh',
       backgroundColor: theme.colors.background,
-      color: theme.colors.foreground
+      color: theme.colors.foreground,
+      position: 'relative'
     }}>
       {/* Header */}
       <header style={{
@@ -2300,6 +2188,49 @@ const App: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Floating AI Button */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          backgroundColor: '#ff8c00',
+          border: '2px solid #ff8c00',
+          borderRadius: '50%',
+          width: '56px',
+          height: '56px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          boxShadow: '0 4px 16px rgba(255, 140, 0, 0.3)',
+          transition: 'all 0.3s ease',
+          zIndex: 1000
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#ff7700';
+          e.currentTarget.style.transform = 'scale(1.1)';
+          e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 140, 0, 0.5)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#ff8c00';
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 140, 0, 0.3)';
+        }}
+        onClick={(e) => {
+          e.preventDefault();
+          console.log('AI Agent clicked - Opening chat interface for voice notes, text chat, and actions');
+          // TODO: Implement AI agent chat interface
+          alert('AI Agent interface will be implemented soon! This will allow you to chat, send voice notes, and take actions.');
+        }}
+      >
+        <Icon 
+          name="brain" 
+          size={24} 
+          color="white"
+        />
+      </div>
     </div>
   );
 };

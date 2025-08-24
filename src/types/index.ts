@@ -161,7 +161,7 @@ export interface SOP {
 
 // Navigation types
 export type Screen = 
-  | 'dashboard' 
+  | 'overview' 
   | 'workitems' 
   | 'contacts' 
   | 'analytics' 
@@ -264,4 +264,62 @@ export interface TableHeadProps {
 
 export interface TableBodyProps {
   children: React.ReactNode;
+}
+
+// Dashboard Widget Types
+export type WidgetType = 
+  | 'metric_card' 
+  | 'chart' 
+  | 'table' 
+  | 'progress_bar' 
+  | 'activity_feed' 
+  | 'quick_actions';
+
+export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'donut';
+
+export interface WidgetDataSource {
+  type: 'workitems' | 'contacts' | 'sops' | 'employees' | 'custom';
+  filters?: {
+    field: string;
+    operator: 'equals' | 'not_equals' | 'contains' | 'greater_than' | 'less_than';
+    value: string | number;
+  }[];
+  groupBy?: string;
+  aggregation?: 'count' | 'sum' | 'avg' | 'min' | 'max';
+  timeRange?: '7d' | '30d' | '90d' | '1y' | 'all';
+}
+
+export interface Widget {
+  id: string;
+  title: string;
+  type: WidgetType;
+  position: { x: number; y: number; w: number; h: number };
+  dataSource: WidgetDataSource;
+  config: {
+    chartType?: ChartType;
+    showTrend?: boolean;
+    color?: string;
+    icon?: string;
+    refreshInterval?: number; // minutes
+    customQuery?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIInsight {
+  id: string;
+  type: 'trend' | 'anomaly' | 'prediction' | 'recommendation';
+  title: string;
+  description: string;
+  confidence: number; // 0-100
+  priority: 'low' | 'medium' | 'high';
+  actionable: boolean;
+  relatedData?: {
+    source: string;
+    metric: string;
+    value: string | number;
+    change?: string;
+  };
+  createdAt: string;
 }

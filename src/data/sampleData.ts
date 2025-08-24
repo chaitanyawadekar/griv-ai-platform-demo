@@ -1,4 +1,4 @@
-import { WorkitemType, ContactType, Workitem, Contact, Field, Employee, SOP, Department } from '../types';
+import { WorkitemType, ContactType, Workitem, Contact, Field, Employee, SOP, Department, Widget, AIInsight } from '../types';
 
 // Workitem Types
 export const workitemTypes: WorkitemType[] = [
@@ -708,5 +708,268 @@ export const sops: SOP[] = [
     createdAt: '2024-01-05',
     lastModified: '2024-01-18',
     tags: ['support', 'critical', 'escalation']
+  }
+];
+
+// Sample Widgets for Overview Dashboard
+export const sampleWidgets: Widget[] = [
+  {
+    id: 'widget_1',
+    title: 'Today\'s Workitems',
+    type: 'metric_card',
+    position: { x: 0, y: 0, w: 3, h: 2 },
+    dataSource: {
+      type: 'workitems',
+      filters: [{
+        field: 'status',
+        operator: 'not_equals',
+        value: 'Closed'
+      }],
+      aggregation: 'count',
+      timeRange: '7d'
+    },
+    config: {
+      showTrend: true,
+      color: '#3b82f6',
+      icon: 'briefcase',
+      refreshInterval: 5
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_2',
+    title: 'Priority Breakdown',
+    type: 'chart',
+    position: { x: 3, y: 0, w: 4, h: 3 },
+    dataSource: {
+      type: 'workitems',
+      groupBy: 'priority',
+      aggregation: 'count',
+      timeRange: '30d'
+    },
+    config: {
+      chartType: 'pie',
+      color: '#10b981',
+      refreshInterval: 15
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_3',
+    title: 'My Daily Progress',
+    type: 'progress_bar',
+    position: { x: 7, y: 0, w: 3, h: 2 },
+    dataSource: {
+      type: 'workitems',
+      filters: [{
+        field: 'assignee',
+        operator: 'equals',
+        value: 'John Smith'
+      }, {
+        field: 'status',
+        operator: 'equals',
+        value: 'Closed'
+      }],
+      aggregation: 'count',
+      timeRange: '7d'
+    },
+    config: {
+      color: '#f59e0b',
+      icon: 'target',
+      refreshInterval: 10
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_4',
+    title: 'Department Performance',
+    type: 'chart',
+    position: { x: 0, y: 2, w: 5, h: 3 },
+    dataSource: {
+      type: 'workitems',
+      groupBy: 'department',
+      aggregation: 'count',
+      timeRange: '30d'
+    },
+    config: {
+      chartType: 'bar',
+      showTrend: true,
+      color: '#8b5cf6',
+      refreshInterval: 20
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_5',
+    title: 'Recent Activity',
+    type: 'activity_feed',
+    position: { x: 5, y: 2, w: 5, h: 4 },
+    dataSource: {
+      type: 'workitems',
+      timeRange: '7d'
+    },
+    config: {
+      refreshInterval: 5
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_6',
+    title: 'Quick Actions',
+    type: 'quick_actions',
+    position: { x: 0, y: 5, w: 4, h: 2 },
+    dataSource: {
+      type: 'custom'
+    },
+    config: {
+      customQuery: 'daily_actions'
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_7',
+    title: 'New Contacts This Week',
+    type: 'metric_card',
+    position: { x: 0, y: 3, w: 2, h: 2 },
+    dataSource: {
+      type: 'contacts',
+      filters: [{
+        field: 'status',
+        operator: 'equals',
+        value: 'Active'
+      }],
+      aggregation: 'count',
+      timeRange: '7d'
+    },
+    config: {
+      showTrend: true,
+      color: '#14b8a6',
+      icon: 'users',
+      refreshInterval: 30
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  },
+  {
+    id: 'widget_8',
+    title: 'Personal Schedule',
+    type: 'table',
+    position: { x: 4, y: 5, w: 6, h: 3 },
+    dataSource: {
+      type: 'custom',
+      timeRange: '7d'
+    },
+    config: {
+      customQuery: 'personal_schedule',
+      refreshInterval: 60
+    },
+    createdAt: '2024-08-20',
+    updatedAt: '2024-08-24'
+  }
+];
+
+// Sample AI Insights
+export const sampleAIInsights: AIInsight[] = [
+  {
+    id: 'insight_1',
+    type: 'trend',
+    title: 'Workitem Volume Increasing',
+    description: 'Your daily workitem creation has increased by 23% this week. Consider reviewing resource allocation.',
+    confidence: 87,
+    priority: 'medium',
+    actionable: true,
+    relatedData: {
+      source: 'workitems',
+      metric: 'daily_creation_rate',
+      value: 12,
+      change: '+23%'
+    },
+    createdAt: '2024-08-24'
+  },
+  {
+    id: 'insight_2',
+    type: 'anomaly',
+    title: 'Unusual Contact Pattern',
+    description: 'Your contact frequency with Business-type contacts has dropped 40% this week.',
+    confidence: 94,
+    priority: 'high',
+    actionable: true,
+    relatedData: {
+      source: 'contacts',
+      metric: 'contact_frequency',
+      value: 8,
+      change: '-40%'
+    },
+    createdAt: '2024-08-24'
+  },
+  {
+    id: 'insight_3',
+    type: 'recommendation',
+    title: 'Optimize Morning Schedule',
+    description: 'Based on your activity patterns, scheduling important calls between 9-11 AM shows 45% better response rates.',
+    confidence: 76,
+    priority: 'low',
+    actionable: true,
+    relatedData: {
+      source: 'workitems',
+      metric: 'response_rate',
+      value: 45,
+      change: '+45%'
+    },
+    createdAt: '2024-08-23'
+  },
+  {
+    id: 'insight_4',
+    type: 'prediction',
+    title: 'High-Priority Week Ahead',
+    description: 'AI predicts next week will have 35% more high-priority workitems based on historical patterns and current trends.',
+    confidence: 82,
+    priority: 'medium',
+    actionable: true,
+    relatedData: {
+      source: 'workitems',
+      metric: 'priority_forecast',
+      value: 18,
+      change: '+35%'
+    },
+    createdAt: '2024-08-24'
+  },
+  {
+    id: 'insight_5',
+    type: 'trend',
+    title: 'Productive Afternoon Sessions',
+    description: 'Your workitem completion rate is 28% higher during afternoon hours (2-5 PM) this month.',
+    confidence: 91,
+    priority: 'low',
+    actionable: false,
+    relatedData: {
+      source: 'workitems',
+      metric: 'completion_rate',
+      value: 28,
+      change: '+28%'
+    },
+    createdAt: '2024-08-23'
+  },
+  {
+    id: 'insight_6',
+    type: 'recommendation',
+    title: 'Follow-up Opportunity',
+    description: 'You have 7 inactive contacts who were last contacted over 2 weeks ago. Consider a follow-up campaign.',
+    confidence: 89,
+    priority: 'medium',
+    actionable: true,
+    relatedData: {
+      source: 'contacts',
+      metric: 'inactive_contacts',
+      value: 7,
+      change: '2+ weeks'
+    },
+    createdAt: '2024-08-24'
   }
 ];
