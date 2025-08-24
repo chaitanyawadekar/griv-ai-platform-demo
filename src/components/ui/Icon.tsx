@@ -13,22 +13,22 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
     ),
     workitems: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="m22 2-5 10-5-5 10-5z"/>
+        <rect width="18" height="18" x="3" y="3" rx="2"/>
+        <path d="m9 9 2 2 4-4"/>
       </svg>
     ),
     contacts: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="m22 11 2 2v3h-2l-2-2-2 2h-2v-3l2-2"/>
+        <path d="M3 5a2 2 0 0 1 2-2h3.28a1 1 0 0 1 .948.684l1.498 4.493a1 1 0 0 1-.502 1.21l-2.257 1.13a11.042 11.042 0 0 0 5.516 5.516l1.13-2.257a1 1 0 0 1 1.21-.502l4.493 1.498a1 1 0 0 1 .684.949V19a2 2 0 0 1-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
       </svg>
     ),
     workflows: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        <circle cx="12" cy="12" r="4"/>
+        <rect width="8" height="8" x="3" y="3" rx="2"/>
+        <path d="m7 11 0 4"/>
+        <rect width="8" height="8" x="13" y="13" rx="2"/>
+        <path d="m17 11 0-4"/>
+        <path d="m11 7 6 0"/>
       </svg>
     ),
     analytics: (
@@ -46,7 +46,7 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
     plus: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12h14"/>
-        <path d="m12 5 7 7-7 7"/>
+        <path d="m12 5v14"/>
       </svg>
     ),
     edit: (
@@ -135,9 +135,13 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
     ),
     workflow: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 3v18h18"/>
-        <path d="M7 12l3 3 7-7"/>
-        <rect x="14" y="14" width="4" height="4" rx="1"/>
+        <circle cx="5" cy="6" r="3"/>
+        <path d="m5 9 0 6"/>
+        <circle cx="5" cy="18" r="3"/>
+        <path d="m8 6 6 0"/>
+        <circle cx="17" cy="6" r="3"/>
+        <path d="m8 18 6 0"/>
+        <circle cx="17" cy="18" r="3"/>
       </svg>
     ),
     team: (
@@ -184,10 +188,90 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, color = 'currentCol
         <polyline points="16,17 21,12 16,7"/>
         <line x1="21" x2="9" y1="12" y2="12"/>
       </svg>
+    ),
+    'chevron-left': (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+    ),
+    sync: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2v10l3-3m6 5a9 9 0 1 1-9-9"/>
+      </svg>
+    ),
+    message: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+      </svg>
+    ),
+    upload: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7,10 12,15 17,10"/>
+        <line x1="12" x2="12" y1="15" y2="3"/>
+      </svg>
+    ),
+    building: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+        <path d="M6 12h4"/>
+        <path d="M6 16h4"/>
+        <path d="M16 8h2"/>
+        <path d="M16 12h2"/>
+        <path d="M16 16h2"/>
+      </svg>
+    ),
+    save: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+        <polyline points="17,21 17,13 7,13 7,21"/>
+        <polyline points="7,3 7,8 15,8"/>
+      </svg>
+    ),
+    check: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20,6 9,17 4,12"/>
+      </svg>
+    ),
+    calendar: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+        <line x1="16" x2="16" y1="2" y2="6"/>
+        <line x1="8" x2="8" y1="2" y2="6"/>
+        <line x1="3" x2="21" y1="10" y2="10"/>
+      </svg>
+    ),
+    table: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3v18"/>
+        <rect width="18" height="18" x="3" y="3" rx="2"/>
+        <path d="M3 9h18"/>
+        <path d="M3 15h18"/>
+      </svg>
+    ),
+    todo: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 6h13"/>
+        <path d="M8 12h13"/>
+        <path d="M8 18h13"/>
+        <path d="M3 6h.01"/>
+        <path d="M3 12h.01"/>
+        <path d="M3 18h.01"/>
+      </svg>
+    ),
+    checklist: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m3 5 2 2 4-4"/>
+        <path d="M11 5h10"/>
+        <path d="m3 12 2 2 4-4"/>
+        <path d="M11 12h10"/>
+        <path d="M3 19h2"/>
+        <path d="M11 19h10"/>
+      </svg>
     )
   };
 
-  const iconElement = iconMap[name] || iconMap.help;
+  const iconElement = iconMap[name] || iconMap['help'];
 
   return (
     <span

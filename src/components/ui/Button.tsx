@@ -40,6 +40,15 @@ export const Button: React.FC<ButtonProps> = ({
             backgroundColor: theme.colors.muted
           }
         };
+      case 'destructive':
+        return {
+          backgroundColor: theme.colors.destructive,
+          color: theme.colors.primaryForeground,
+          border: 'none',
+          '&:hover': {
+            backgroundColor: '#dc2626'
+          }
+        };
       default:
         return {
           backgroundColor: theme.colors.primary,

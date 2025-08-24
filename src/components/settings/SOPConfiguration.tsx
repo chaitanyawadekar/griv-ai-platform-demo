@@ -267,7 +267,7 @@ export const SOPConfiguration: React.FC<SOPConfigurationProps> = ({
                         setShowManageSOPSteps(true);
                       }}
                     >
-                      <Icon name="workflow" size={14} />
+                      <Icon name="checklist" size={14} />
                     </Button>
                     <Button
                       variant="ghost"

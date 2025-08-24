@@ -4,7 +4,8 @@ import { theme } from '../../data/theme';
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
-  variant = 'default'
+  variant = 'default',
+  style = {}
 }) => {
   const getVariantStyles = () => {
     switch (variant) {
@@ -23,6 +24,11 @@ export const Badge: React.FC<BadgeProps> = ({
           backgroundColor: `${theme.colors.destructive}20`,
           color: theme.colors.destructive
         };
+      case 'warning':
+        return {
+          backgroundColor: `${theme.colors.warning}20`,
+          color: theme.colors.warning
+        };
       default:
         return {
           backgroundColor: `${theme.colors.primary}20`,
@@ -39,7 +45,8 @@ export const Badge: React.FC<BadgeProps> = ({
     fontWeight: '500',
     borderRadius: '0.375rem',
     border: `1px solid transparent`,
-    ...getVariantStyles()
+    ...getVariantStyles(),
+    ...style
   };
 
   return (

@@ -52,6 +52,8 @@ export interface Workitem {
   contact?: string;
   createdAt: string;
   updatedAt: string;
+  // Type-specific fields stored as flexible object
+  typeFields?: Record<string, any>;
 }
 
 // Contact related types
@@ -91,11 +93,31 @@ export interface Employee {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   department: string;
   role: string;
-  permissions: string[];
+  accessLevel: 'read' | 'write' | 'admin';
+  permissions: {
+    workitems: 'read' | 'write' | 'admin';
+    contacts: 'read' | 'write' | 'admin';
+    workflows: 'read' | 'write' | 'admin';
+    settings: 'read' | 'write' | 'admin';
+    team: 'read' | 'write' | 'admin';
+  };
   status: 'Active' | 'Inactive';
   joinDate: string;
+  lastActive?: string;
+  avatar?: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  description: string;
+  head: string; // Employee ID
+  memberCount: number;
+  color: string;
+  createdAt: string;
 }
 
 // SOP related types
@@ -142,13 +164,13 @@ export type Screen =
   | 'dashboard' 
   | 'workitems' 
   | 'contacts' 
-  | 'workflows' 
   | 'analytics' 
   | 'settings';
 
 export type SettingsTab = 
   | 'general' 
   | 'fields' 
+  | 'workflows'
   | 'sops' 
   | 'team' 
   | 'integrations' 
@@ -169,18 +191,12 @@ export interface ModalState {
   showConditionBuilder: boolean;
 }
 
-// Department types
-export interface Department {
-  name: string;
-  members: number;
-  head: string;
-}
 
 // Component prop types
 export interface ButtonProps {
   children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'default' | 'outline' | 'ghost' | 'secondary';
+  onClick?: (e?: any) => void;
+  variant?: 'default' | 'outline' | 'ghost' | 'secondary' | 'destructive';
   size?: 'sm' | 'md' | 'lg';
   style?: React.CSSProperties;
   type?: 'button' | 'submit' | 'reset';
@@ -213,7 +229,8 @@ export interface IconProps {
 
 export interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'default' | 'secondary' | 'success' | 'destructive';
+  variant?: 'default' | 'secondary' | 'success' | 'destructive' | 'warning';
+  style?: React.CSSProperties;
 }
 
 export interface TableProps {
@@ -223,6 +240,7 @@ export interface TableProps {
 export interface TableRowProps {
   children: React.ReactNode;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export interface TableCellProps {

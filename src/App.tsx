@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import './App.css';
 
 // Import types
-import { Screen, SOP, SOPCondition, Employee, Workitem, Contact } from './types';
+import { Screen, SOP, SOPCondition, Employee, Department, Workitem, Contact } from './types';
 
 // Import data
 import { theme } from './data/theme';
-import { sops, employees, sampleWorkitems, sampleContacts } from './data/sampleData';
+import { sops, employees, departments, sampleWorkitems, sampleContacts, workitemTypes, contactTypes } from './data/sampleData';
 
 // Import UI components
 import { Button, Icon, Modal } from './components/ui';
 
 // Import screen components
 import { SettingsScreen } from './components/screens/SettingsScreen';
+import { WorkitemDetailScreen } from './components/screens/WorkitemDetailScreen';
+import { WorkitemsScreen } from './components/screens/WorkitemsScreen';
 
 const App: React.FC = () => {
   // Navigation state
@@ -21,9 +23,14 @@ const App: React.FC = () => {
 
   // Data state
   const [sopsState, setSopsState] = useState<SOP[]>(sops);
-  const [employeesState] = useState<Employee[]>(employees);
-  const [workitems] = useState<Workitem[]>(sampleWorkitems);
-  const [contacts] = useState<Contact[]>(sampleContacts);
+  const [employeesState, setEmployeesState] = useState<Employee[]>(employees);
+  const [departmentsState, setDepartmentsState] = useState<Department[]>(departments);
+  const [workitemsState, setWorkitemsState] = useState<Workitem[]>(sampleWorkitems);
+  const [contactsState, setContactsState] = useState<Contact[]>(sampleContacts);
+
+  // Workitem detail state
+  const [selectedWorkitem, setSelectedWorkitem] = useState<Workitem | null>(null);
+  const [showWorkitemDetail, setShowWorkitemDetail] = useState(false);
 
   // Modal states
   const [showCreateSOP, setShowCreateSOP] = useState(false);
@@ -32,6 +39,9 @@ const App: React.FC = () => {
   const [showConditionBuilder, setShowConditionBuilder] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
   const [showEditEmployee, setShowEditEmployee] = useState(false);
+  const [showAddDepartment, setShowAddDepartment] = useState(false);
+  const [showEditDepartment, setShowEditDepartment] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
   const [showCreateWorkitem, setShowCreateWorkitem] = useState(false);
   const [showCreateContact, setShowCreateContact] = useState(false);
 
@@ -48,6 +58,31 @@ const App: React.FC = () => {
     version: '1.0.0',
     tags: '',
     conditions: [] as SOPCondition[]
+  });
+
+  // Employee Form states
+  const [employeeFormData, setEmployeeFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    department: '',
+    role: '',
+    accessLevel: 'read' as 'read' | 'write' | 'admin',
+    permissions: {
+      workitems: 'read' as 'read' | 'write' | 'admin',
+      contacts: 'read' as 'read' | 'write' | 'admin',
+      workflows: 'read' as 'read' | 'write' | 'admin',
+      settings: 'read' as 'read' | 'write' | 'admin',
+      team: 'read' as 'read' | 'write' | 'admin'
+    },
+    status: 'Active' as 'Active' | 'Inactive'
+  });
+
+  // Department Form states
+  const [departmentFormData, setDepartmentFormData] = useState({
+    name: '',
+    description: '',
+    color: '#3b82f6'
   });
 
   // Field options for condition dropdowns
@@ -80,15 +115,61 @@ const App: React.FC = () => {
     }
   };
 
+  // Workitem management functions
+  const handleWorkitemClick = (workitem: Workitem) => {
+    setSelectedWorkitem(workitem);
+    setShowWorkitemDetail(true);
+  };
+
+  const handleWorkitemUpdate = (updatedWorkitem: Workitem) => {
+    setWorkitemsState(workitemsState.map(w => 
+      w.id === updatedWorkitem.id ? updatedWorkitem : w
+    ));
+    setSelectedWorkitem(updatedWorkitem);
+  };
+
+  const handleWorkitemDelete = (workitemId: string) => {
+    setWorkitemsState(workitemsState.filter(w => w.id !== workitemId));
+    setSelectedWorkitem(null);
+    setShowWorkitemDetail(false);
+  };
+
+  const handleWorkitemClose = (workitemId: string) => {
+    // Additional logic for closing workitem if needed
+    console.log('Workitem closed:', workitemId);
+  };
+
+  const handleBackToWorkitems = () => {
+    setSelectedWorkitem(null);
+    setShowWorkitemDetail(false);
+  };
+
   const navigationItems = [
     { id: 'dashboard' as Screen, label: 'Dashboard', icon: 'dashboard' },
     { id: 'workitems' as Screen, label: 'Workitems', icon: 'workitems' },
     { id: 'contacts' as Screen, label: 'Contacts', icon: 'contacts' },
-    { id: 'workflows' as Screen, label: 'Workflows', icon: 'workflows' },
     { id: 'analytics' as Screen, label: 'Analytics', icon: 'analytics' }
   ];
 
   const renderScreen = () => {
+    // Show workitem detail if selected
+    if (showWorkitemDetail && selectedWorkitem) {
+      return (
+        <WorkitemDetailScreen
+          workitem={selectedWorkitem}
+          workitemTypes={workitemTypes}
+          employees={employeesState}
+          contacts={contactsState}
+          sops={sopsState}
+          departments={departmentsState}
+          onBack={handleBackToWorkitems}
+          onUpdate={handleWorkitemUpdate}
+          onDelete={handleWorkitemDelete}
+          onClose={handleWorkitemClose}
+        />
+      );
+    }
+
     switch (activeScreen) {
       case 'settings':
         return (
@@ -96,6 +177,9 @@ const App: React.FC = () => {
             sops={sopsState}
             setSops={setSopsState}
             employees={employeesState}
+            setEmployees={setEmployeesState}
+            departments={departmentsState}
+            setDepartments={setDepartmentsState}
             setShowCreateSOP={setShowCreateSOP}
             setShowEditSOP={setShowEditSOP}
             setShowManageSOPSteps={setShowManageSOPSteps}
@@ -104,6 +188,20 @@ const App: React.FC = () => {
             setShowAddEmployee={setShowAddEmployee}
             setShowEditEmployee={setShowEditEmployee}
             setSelectedEmployee={setSelectedEmployee}
+            setShowAddDepartment={setShowAddDepartment}
+            setShowEditDepartment={setShowEditDepartment}
+            setSelectedDepartment={setSelectedDepartment}
+          />
+        );
+      case 'workitems':
+        return (
+          <WorkitemsScreen
+            workitems={workitemsState}
+            workitemTypes={workitemTypes}
+            employees={employeesState}
+            departments={departmentsState}
+            onWorkitemClick={handleWorkitemClick}
+            onCreateWorkitem={() => setShowCreateWorkitem(true)}
           />
         );
       case 'dashboard':
@@ -173,7 +271,7 @@ const App: React.FC = () => {
                   color: theme.colors.mutedForeground,
                   margin: 0
                 }}>
-                  {workitems.length} active workitems
+                  {workitemsState.length} active workitems
                 </p>
               </div>
 
@@ -195,7 +293,7 @@ const App: React.FC = () => {
                   color: theme.colors.mutedForeground,
                   margin: 0
                 }}>
-                  {contacts.length} total contacts
+                  {contactsState.length} total contacts
                 </p>
               </div>
 
@@ -276,7 +374,7 @@ const App: React.FC = () => {
         </div>
 
         {/* Navigation */}
-        <nav style={{ display: 'flex', gap: '0.5rem' }}>
+        <nav style={{ display: 'flex', gap: '0.25rem' }}>
           {navigationItems.map((item) => (
             <button
               key={item.id}
@@ -286,27 +384,34 @@ const App: React.FC = () => {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.625rem 1rem',
-                border: 'none',
-                backgroundColor: activeScreen === item.id ? theme.colors.secondary : 'transparent',
-                color: theme.colors.foreground,
+                border: activeScreen === item.id ? `2px solid ${theme.colors.primary}` : '2px solid transparent',
+                backgroundColor: activeScreen === item.id ? theme.colors.primary : 'transparent',
+                color: activeScreen === item.id ? theme.colors.primaryForeground : theme.colors.foreground,
                 borderRadius: '8px',
                 cursor: 'pointer',
                 fontSize: '0.875rem',
-                fontWeight: '500',
-                transition: 'all 0.2s'
+                fontWeight: activeScreen === item.id ? '600' : '500',
+                transition: 'all 0.2s',
+                position: 'relative'
               }}
               onMouseEnter={(e) => {
                 if (activeScreen !== item.id) {
                   e.currentTarget.style.backgroundColor = theme.colors.secondary;
+                  e.currentTarget.style.color = theme.colors.foreground;
                 }
               }}
               onMouseLeave={(e) => {
                 if (activeScreen !== item.id) {
                   e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = theme.colors.foreground;
                 }
               }}
             >
-              <Icon name={item.icon} size={16} />
+              <Icon 
+                name={item.icon} 
+                size={16} 
+                color={activeScreen === item.id ? theme.colors.primaryForeground : 'currentColor'} 
+              />
               {item.label}
             </button>
           ))}
@@ -1665,6 +1770,477 @@ const App: React.FC = () => {
       >
         <div>
           <p>Contact creation form would go here...</p>
+        </div>
+      </Modal>
+
+      {/* Add Employee Modal */}
+      <Modal
+        show={showAddEmployee}
+        onClose={() => {
+          setShowAddEmployee(false);
+          setEmployeeFormData({
+            name: '',
+            email: '',
+            phone: '',
+            department: '',
+            role: '',
+            accessLevel: 'read',
+            permissions: {
+              workitems: 'read',
+              contacts: 'read',
+              workflows: 'read',
+              settings: 'read',
+              team: 'read'
+            },
+            status: 'Active'
+          });
+        }}
+        title="Add New Employee"
+        size="lg"
+      >
+        <div style={{ display: 'grid', gap: '1.5rem' }}>
+          {/* Basic Information */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Full Name *
+              </label>
+              <input
+                type="text"
+                placeholder="Enter full name"
+                value={employeeFormData.name}
+                onChange={(e) => setEmployeeFormData({ ...employeeFormData, name: e.target.value })}
+                style={{
+                  width: 'calc(100% - 1rem)',
+                  padding: '0.75rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Email Address *
+              </label>
+              <input
+                type="email"
+                placeholder="Enter email address"
+                value={employeeFormData.email}
+                onChange={(e) => setEmployeeFormData({ ...employeeFormData, email: e.target.value })}
+                style={{
+                  width: 'calc(100% - 1rem)',
+                  padding: '0.75rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                placeholder="Enter phone number"
+                value={employeeFormData.phone}
+                onChange={(e) => setEmployeeFormData({ ...employeeFormData, phone: e.target.value })}
+                style={{
+                  width: 'calc(100% - 1rem)',
+                  padding: '0.75rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Department *
+              </label>
+              <select
+                value={employeeFormData.department}
+                onChange={(e) => setEmployeeFormData({ ...employeeFormData, department: e.target.value })}
+                style={{
+                  width: 'calc(100% - 1rem)',
+                  padding: '0.75rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <option value="">Select department</option>
+                {departmentsState.map((dept) => (
+                  <option key={dept.id} value={dept.name}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Role/Position *
+              </label>
+              <input
+                type="text"
+                placeholder="Enter role or position"
+                value={employeeFormData.role}
+                onChange={(e) => setEmployeeFormData({ ...employeeFormData, role: e.target.value })}
+                style={{
+                  width: 'calc(100% - 1rem)',
+                  padding: '0.75rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: theme.colors.foreground,
+                marginBottom: '0.5rem'
+              }}>
+                Access Level *
+              </label>
+              <select
+                value={employeeFormData.accessLevel}
+                onChange={(e) => {
+                  const level = e.target.value as 'read' | 'write' | 'admin';
+                  setEmployeeFormData({
+                    ...employeeFormData,
+                    accessLevel: level,
+                    permissions: {
+                      workitems: level,
+                      contacts: level,
+                      workflows: level,
+                      settings: level === 'admin' ? 'admin' : 'read',
+                      team: level === 'admin' ? 'admin' : 'read'
+                    }
+                  });
+                }}
+                style={{
+                  width: 'calc(100% - 1rem)',
+                  padding: '0.75rem',
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  color: theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <option value="read">Read Only</option>
+                <option value="write">Read & Write</option>
+                <option value="admin">Administrator</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Permissions Section */}
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: theme.colors.foreground,
+              marginBottom: '0.5rem'
+            }}>
+              Module Permissions
+            </label>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '1rem',
+              padding: '1rem',
+              backgroundColor: theme.colors.secondary,
+              borderRadius: '6px',
+              border: `1px solid ${theme.colors.border}`
+            }}>
+              {Object.entries(employeeFormData.permissions).map(([module, permission]) => (
+                <div key={module} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    textTransform: 'capitalize'
+                  }}>
+                    {module}
+                  </span>
+                  <select
+                    value={permission}
+                    onChange={(e) => setEmployeeFormData({
+                      ...employeeFormData,
+                      permissions: {
+                        ...employeeFormData.permissions,
+                        [module]: e.target.value as 'read' | 'write' | 'admin'
+                      }
+                    })}
+                    style={{
+                      padding: '0.25rem 0.5rem',
+                      border: `1px solid ${theme.colors.border}`,
+                      borderRadius: '4px',
+                      backgroundColor: theme.colors.background,
+                      color: theme.colors.foreground,
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    <option value="read">Read</option>
+                    <option value="write">Write</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            justifyContent: 'flex-end',
+            paddingTop: '1rem',
+            borderTop: `1px solid ${theme.colors.border}`
+          }}>
+            <Button
+              variant="outline"
+              onClick={() => setShowAddEmployee(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (!employeeFormData.name.trim() || !employeeFormData.email.trim() || 
+                    !employeeFormData.department || !employeeFormData.role.trim()) {
+                  alert('Please fill in all required fields');
+                  return;
+                }
+                const newEmployee: Employee = {
+                  id: `emp-${Date.now()}`,
+                  name: employeeFormData.name,
+                  email: employeeFormData.email,
+                  phone: employeeFormData.phone,
+                  department: employeeFormData.department,
+                  role: employeeFormData.role,
+                  accessLevel: employeeFormData.accessLevel,
+                  permissions: employeeFormData.permissions,
+                  status: employeeFormData.status,
+                  joinDate: new Date().toISOString().split('T')[0],
+                  lastActive: new Date().toISOString().split('T')[0]
+                };
+                setEmployeesState([...employeesState, newEmployee]);
+                setShowAddEmployee(false);
+                setEmployeeFormData({
+                  name: '',
+                  email: '',
+                  phone: '',
+                  department: '',
+                  role: '',
+                  accessLevel: 'read',
+                  permissions: {
+                    workitems: 'read',
+                    contacts: 'read',
+                    workflows: 'read',
+                    settings: 'read',
+                    team: 'read'
+                  },
+                  status: 'Active'
+                });
+              }}
+            >
+              Add Employee
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Add Department Modal */}
+      <Modal
+        show={showAddDepartment}
+        onClose={() => {
+          setShowAddDepartment(false);
+          setDepartmentFormData({
+            name: '',
+            description: '',
+            color: '#3b82f6'
+          });
+        }}
+        title="Add New Department"
+        size="md"
+      >
+        <div style={{ display: 'grid', gap: '1.5rem' }}>
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: theme.colors.foreground,
+              marginBottom: '0.5rem'
+            }}>
+              Department Name *
+            </label>
+            <input
+              type="text"
+              placeholder="Enter department name"
+              value={departmentFormData.name}
+              onChange={(e) => setDepartmentFormData({ ...departmentFormData, name: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: '6px',
+                backgroundColor: theme.colors.background,
+                color: theme.colors.foreground,
+                fontSize: '0.875rem'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: theme.colors.foreground,
+              marginBottom: '0.5rem'
+            }}>
+              Description
+            </label>
+            <textarea
+              placeholder="Enter department description"
+              value={departmentFormData.description}
+              onChange={(e) => setDepartmentFormData({ ...departmentFormData, description: e.target.value })}
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: '6px',
+                backgroundColor: theme.colors.background,
+                color: theme.colors.foreground,
+                fontSize: '0.875rem',
+                resize: 'vertical'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: theme.colors.foreground,
+              marginBottom: '0.5rem'
+            }}>
+              Department Color
+            </label>
+            <input
+              type="color"
+              value={departmentFormData.color}
+              onChange={(e) => setDepartmentFormData({ ...departmentFormData, color: e.target.value })}
+              style={{
+                width: '80px',
+                height: '45px',
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: '6px',
+                backgroundColor: theme.colors.background,
+                cursor: 'pointer'
+              }}
+            />
+          </div>
+
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            justifyContent: 'flex-end',
+            paddingTop: '1rem',
+            borderTop: `1px solid ${theme.colors.border}`
+          }}>
+            <Button
+              variant="outline"
+              onClick={() => setShowAddDepartment(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (!departmentFormData.name.trim()) {
+                  alert('Please enter a department name');
+                  return;
+                }
+                const newDepartment: Department = {
+                  id: `dept-${Date.now()}`,
+                  name: departmentFormData.name,
+                  description: departmentFormData.description,
+                  head: '',
+                  memberCount: 0,
+                  color: departmentFormData.color,
+                  createdAt: new Date().toISOString()
+                };
+                setDepartmentsState([...departmentsState, newDepartment]);
+                setShowAddDepartment(false);
+                setDepartmentFormData({
+                  name: '',
+                  description: '',
+                  color: '#3b82f6'
+                });
+              }}
+            >
+              Add Department
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

@@ -32,7 +32,16 @@ export const sampleWorkitems: Workitem[] = [
     location: 'Mumbai',
     contact: 'Rajesh Kumar',
     createdAt: '2024-01-15',
-    updatedAt: '2024-01-20'
+    updatedAt: '2024-01-20',
+    typeFields: {
+      name: 'Rajesh Kumar',
+      phone: '+91-98765-43210',
+      email: 'rajesh.kumar@email.com',
+      source: 'Website Form',
+      company: 'Manufacturing Corp',
+      budget: '$50,000 - $100,000',
+      timeline: 'Q2 2024'
+    }
   },
   {
     id: '2',
@@ -48,7 +57,16 @@ export const sampleWorkitems: Workitem[] = [
     location: 'Delhi',
     contact: 'Priya Sharma',
     createdAt: '2024-01-18',
-    updatedAt: '2024-01-22'
+    updatedAt: '2024-01-22',
+    typeFields: {
+      name: 'Priya Sharma',
+      phone: '+91-87654-32109',
+      issue: 'Delayed Response Times',
+      category: 'Service Quality',
+      severity: 'High',
+      affectedServices: ['Customer Support', 'Technical Help'],
+      reportedBy: 'Direct Customer Call'
+    }
   },
   {
     id: '3',
@@ -64,7 +82,41 @@ export const sampleWorkitems: Workitem[] = [
     location: 'Bangalore',
     contact: 'Amit Patel',
     createdAt: '2024-01-10',
-    updatedAt: '2024-01-25'
+    updatedAt: '2024-01-25',
+    typeFields: {
+      name: 'Amit Patel',
+      phone: '+91-76543-21098',
+      request_type: 'Feature Enhancement',
+      platform: 'Mobile App',
+      justification: 'Improve user accessibility',
+      expectedBenefit: 'Increased user engagement by 30%',
+      requestedBy: 'Product Team'
+    }
+  },
+  {
+    id: '4',
+    type: 'Inquiry',
+    title: 'Product Information Request',
+    description: 'Customer inquiring about enterprise pricing and features',
+    status: 'Open',
+    priority: 'Low',
+    assignee: 'Maria Garcia',
+    department: 'Sales',
+    dueDate: '2024-02-25',
+    tags: ['pricing', 'enterprise'],
+    location: 'Chennai',
+    contact: 'Suresh Reddy',
+    createdAt: '2024-01-22',
+    updatedAt: '2024-01-23',
+    typeFields: {
+      name: 'Suresh Reddy',
+      phone: '+91-99887-76543',
+      subject: 'Enterprise Pricing',
+      details: 'Looking for bulk licensing options for 500+ users',
+      industry: 'Financial Services',
+      currentSolution: 'Legacy System',
+      timeframe: '6 months'
+    }
   }
 ];
 
@@ -117,47 +169,257 @@ export const fields: Field[] = [
 ];
 
 // Sample Employees
+// Sample Departments
+export const departments: Department[] = [
+  {
+    id: 'dept-1',
+    name: 'Sales',
+    description: 'Responsible for lead generation, client acquisition, and revenue growth',
+    head: '1',
+    memberCount: 3,
+    color: '#3b82f6',
+    createdAt: '2023-01-01'
+  },
+  {
+    id: 'dept-2', 
+    name: 'Support',
+    description: 'Customer service, technical support, and issue resolution',
+    head: '2',
+    memberCount: 4,
+    color: '#10b981',
+    createdAt: '2023-01-01'
+  },
+  {
+    id: 'dept-3',
+    name: 'Product',
+    description: 'Product development, feature planning, and roadmap management',
+    head: '3',
+    memberCount: 2,
+    color: '#f59e0b',
+    createdAt: '2023-01-01'
+  },
+  {
+    id: 'dept-4',
+    name: 'Engineering',
+    description: 'Software development, system architecture, and technical implementation',
+    head: '4',
+    memberCount: 6,
+    color: '#8b5cf6',
+    createdAt: '2023-01-01'
+  },
+  {
+    id: 'dept-5',
+    name: 'Marketing',
+    description: 'Brand management, digital marketing, and growth strategies',
+    head: '5',
+    memberCount: 3,
+    color: '#ef4444',
+    createdAt: '2023-01-01'
+  },
+  {
+    id: 'dept-6',
+    name: 'HR',
+    description: 'Human resources, recruitment, and employee relations',
+    head: '6',
+    memberCount: 2,
+    color: '#14b8a6',
+    createdAt: '2023-01-01'
+  }
+];
+
 export const employees: Employee[] = [
   {
     id: '1',
     name: 'John Smith',
     email: 'john.smith@company.com',
+    phone: '+1-555-0101',
     department: 'Sales',
     role: 'Sales Manager',
-    permissions: ['view_leads', 'create_workitems', 'manage_contacts'],
+    accessLevel: 'admin',
+    permissions: {
+      workitems: 'admin',
+      contacts: 'admin', 
+      workflows: 'write',
+      settings: 'read',
+      team: 'read'
+    },
     status: 'Active',
-    joinDate: '2023-01-15'
+    joinDate: '2023-01-15',
+    lastActive: '2024-08-24'
   },
   {
     id: '2',
     name: 'Sarah Johnson',
     email: 'sarah.johnson@company.com',
+    phone: '+1-555-0102',
     department: 'Support',
-    role: 'Support Specialist',
-    permissions: ['view_complaints', 'update_status', 'contact_customers'],
+    role: 'Support Manager',
+    accessLevel: 'admin',
+    permissions: {
+      workitems: 'admin',
+      contacts: 'admin',
+      workflows: 'write',
+      settings: 'write',
+      team: 'write'
+    },
     status: 'Active',
-    joinDate: '2023-03-20'
+    joinDate: '2023-03-20',
+    lastActive: '2024-08-24'
   },
   {
     id: '3',
     name: 'Mike Davis',
     email: 'mike.davis@company.com',
+    phone: '+1-555-0103',
     department: 'Product',
     role: 'Product Manager',
-    permissions: ['view_requests', 'manage_features', 'analyze_data'],
+    accessLevel: 'admin',
+    permissions: {
+      workitems: 'admin',
+      contacts: 'write',
+      workflows: 'admin',
+      settings: 'write',
+      team: 'read'
+    },
     status: 'Active',
-    joinDate: '2023-02-10'
+    joinDate: '2023-02-10',
+    lastActive: '2024-08-23'
+  },
+  {
+    id: '4',
+    name: 'Emily Chen',
+    email: 'emily.chen@company.com',
+    phone: '+1-555-0104',
+    department: 'Engineering',
+    role: 'Engineering Manager',
+    accessLevel: 'admin',
+    permissions: {
+      workitems: 'write',
+      contacts: 'read',
+      workflows: 'admin',
+      settings: 'admin',
+      team: 'write'
+    },
+    status: 'Active',
+    joinDate: '2023-01-05',
+    lastActive: '2024-08-24'
+  },
+  {
+    id: '5',
+    name: 'David Wilson',
+    email: 'david.wilson@company.com',
+    phone: '+1-555-0105',
+    department: 'Marketing',
+    role: 'Marketing Director',
+    accessLevel: 'admin',
+    permissions: {
+      workitems: 'write',
+      contacts: 'admin',
+      workflows: 'write',
+      settings: 'read',
+      team: 'read'
+    },
+    status: 'Active',
+    joinDate: '2023-02-28',
+    lastActive: '2024-08-22'
+  },
+  {
+    id: '6',
+    name: 'Lisa Rodriguez',
+    email: 'lisa.rodriguez@company.com',
+    phone: '+1-555-0106',
+    department: 'HR',
+    role: 'HR Director',
+    accessLevel: 'admin',
+    permissions: {
+      workitems: 'read',
+      contacts: 'write',
+      workflows: 'read',
+      settings: 'write',
+      team: 'admin'
+    },
+    status: 'Active',
+    joinDate: '2023-01-20',
+    lastActive: '2024-08-24'
+  },
+  {
+    id: '7',
+    name: 'Alex Thompson',
+    email: 'alex.thompson@company.com',
+    phone: '+1-555-0107',
+    department: 'Engineering',
+    role: 'Senior Developer',
+    accessLevel: 'write',
+    permissions: {
+      workitems: 'write',
+      contacts: 'read',
+      workflows: 'write',
+      settings: 'read',
+      team: 'read'
+    },
+    status: 'Active',
+    joinDate: '2023-03-15',
+    lastActive: '2024-08-23'
+  },
+  {
+    id: '8',
+    name: 'Maria Garcia',
+    email: 'maria.garcia@company.com',
+    phone: '+1-555-0108',
+    department: 'Sales',
+    role: 'Sales Representative',
+    accessLevel: 'write',
+    permissions: {
+      workitems: 'write',
+      contacts: 'write',
+      workflows: 'read',
+      settings: 'read',
+      team: 'read'
+    },
+    status: 'Active',
+    joinDate: '2023-04-10',
+    lastActive: '2024-08-24'
+  },
+  {
+    id: '9',
+    name: 'James Brown',
+    email: 'james.brown@company.com',
+    phone: '+1-555-0109',
+    department: 'Support',
+    role: 'Support Specialist',
+    accessLevel: 'write',
+    permissions: {
+      workitems: 'write',
+      contacts: 'write',
+      workflows: 'read',
+      settings: 'read',
+      team: 'read'
+    },
+    status: 'Active',
+    joinDate: '2023-05-01',
+    lastActive: '2024-08-23'
+  },
+  {
+    id: '10',
+    name: 'Anna Kumar',
+    email: 'anna.kumar@company.com',
+    phone: '+1-555-0110',
+    department: 'Marketing',
+    role: 'Digital Marketing Specialist',
+    accessLevel: 'read',
+    permissions: {
+      workitems: 'read',
+      contacts: 'read',
+      workflows: 'read',
+      settings: 'read',
+      team: 'read'
+    },
+    status: 'Inactive',
+    joinDate: '2023-06-15',
+    lastActive: '2024-08-15'
   }
 ];
 
-// Departments
-export const departments: Department[] = [
-  { name: 'Sales', members: 12, head: 'John Smith' },
-  { name: 'Support', members: 8, head: 'Sarah Johnson' },
-  { name: 'Product', members: 6, head: 'Mike Davis' },
-  { name: 'Marketing', members: 5, head: 'Lisa Chen' },
-  { name: 'Operations', members: 10, head: 'David Wilson' }
-];
 
 // Sample SOPs
 export const sops: SOP[] = [

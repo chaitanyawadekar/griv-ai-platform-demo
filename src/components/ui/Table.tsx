@@ -33,13 +33,14 @@ export const TableBody: React.FC<TableBodyProps> = ({ children }) => {
   );
 };
 
-export const TableRow: React.FC<TableRowProps> = ({ children, onClick }) => {
+export const TableRow: React.FC<TableRowProps> = ({ children, onClick, style }) => {
   return (
     <tr
       onClick={onClick}
       style={{
         borderBottom: `1px solid ${theme.colors.border}`,
-        cursor: onClick ? 'pointer' : 'default'
+        cursor: onClick ? 'pointer' : 'default',
+        ...style
       }}
       onMouseEnter={(e) => {
         if (onClick) {
