@@ -2,11 +2,12 @@ import React from 'react';
 import { Icon } from '../../ui/Icon';
 import { Theme } from '../../../types';
 import { WidgetDataProvider } from '../../../utils/widgetDataProvider';
-import { WidgetFormData } from '../AddWidgetModal';
+import { WidgetConfigEngine, DataSourceType } from '../../../utils/widgetConfigEngine';
+import { LegacyWidgetFormData } from '../AddWidgetModal';
 
 interface DataSourceSelectorProps {
-  formData: WidgetFormData;
-  onChange: (formData: WidgetFormData) => void;
+  formData: LegacyWidgetFormData;
+  onChange: (formData: LegacyWidgetFormData) => void;
   theme: Theme;
 }
 
@@ -14,29 +15,29 @@ const getDataSourceInfo = (source: string) => {
   const info = {
     workitems: {
       icon: 'briefcase',
-      label: 'Work Items',
-      description: 'Tasks, leads, issues, and requests',
+      label: 'Work & Tasks',
+      description: 'Tasks, leads, issues, and project work',
       color: '#3b82f6',
       recordCount: WidgetDataProvider.getSampleDataPreview('workitems', 1000).length
     },
     contacts: {
       icon: 'users',
-      label: 'Contacts',
-      description: 'Customers, leads, and partners',
+      label: 'People & Contacts',
+      description: 'Customers, clients, and team members',
       color: '#10b981',
       recordCount: WidgetDataProvider.getSampleDataPreview('contacts', 1000).length
     },
     employees: {
       icon: 'user',
-      label: 'Employees',
-      description: 'Team members and staff',
+      label: 'Team Members',
+      description: 'Staff, employees, and team data',
       color: '#8b5cf6',
       recordCount: WidgetDataProvider.getSampleDataPreview('employees', 1000).length
     },
     sops: {
-      icon: 'fileText',
-      label: 'SOPs',
-      description: 'Standard operating procedures',
+      icon: 'file-text',
+      label: 'Documents & SOPs',
+      description: 'Standard procedures and documents',
       color: '#f59e0b',
       recordCount: WidgetDataProvider.getSampleDataPreview('sops', 1000).length
     },
@@ -59,32 +60,19 @@ export const DataSourceSelector: React.FC<DataSourceSelectorProps> = ({
   const handleSourceSelect = (source: string) => {
     onChange({
       ...formData,
-      dataSource: source as WidgetFormData['dataSource']
+      dataSource: source as LegacyWidgetFormData['dataSource']
     });
   };
 
   return (
     <div>
-      <h3 style={{
-        fontSize: '1.25rem',
-        fontWeight: '600',
-        color: theme.colors.foreground,
-        marginBottom: '0.5rem'
-      }}>
-        Choose Your Data Source
-      </h3>
-      <p style={{
-        fontSize: '0.875rem',
-        color: theme.colors.mutedForeground,
-        marginBottom: '1.5rem'
-      }}>
-        Select the data source that your widget will display information from.
-      </p>
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '1rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '1.5rem',
+        maxWidth: '800px',
+        margin: '0 auto'
       }}>
         {(['workitems', 'contacts', 'employees', 'sops'] as const).map((source) => {
           const info = getDataSourceInfo(source);
@@ -145,7 +133,7 @@ export const DataSourceSelector: React.FC<DataSourceSelectorProps> = ({
                     color: theme.colors.mutedForeground,
                     margin: '4px 0 0 0'
                   }}>
-                    {info.recordCount} records available
+                    {info.recordCount} items • Last updated today
                   </p>
                 </div>
                 {isSelected && (
@@ -166,11 +154,12 @@ export const DataSourceSelector: React.FC<DataSourceSelectorProps> = ({
               <p style={{
                 fontSize: '0.875rem',
                 color: theme.colors.mutedForeground,
-                margin: 0,
+                margin: '0 0 12px 0',
                 lineHeight: '1.4'
               }}>
                 {info.description}
               </p>
+              
             </div>
           );
         })}

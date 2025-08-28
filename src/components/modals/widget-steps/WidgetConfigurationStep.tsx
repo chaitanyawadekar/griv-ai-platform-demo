@@ -1,21 +1,126 @@
 import React from 'react';
 import { Input } from '../../ui/Input';
+import { Icon } from '../../ui/Icon';
 import { Theme } from '../../../types';
-import { WidgetFormData } from '../AddWidgetModal';
+import { LegacyWidgetFormData } from '../AddWidgetModal';
 import { WidgetDataProvider } from '../../../utils/widgetDataProvider';
+import { WidgetConfigEngine } from '../../../utils/widgetConfigEngine';
+import type { AggregationOption } from '../../../utils/widgetConfigEngine';
 
 interface WidgetConfigurationStepProps {
-  formData: WidgetFormData;
-  onChange: (formData: WidgetFormData) => void;
+  formData: LegacyWidgetFormData;
+  onChange: (formData: LegacyWidgetFormData) => void;
   theme: Theme;
 }
+
+const getDataSourceInfo = (source: string) => {
+  const info = {
+    workitems: { label: 'Work & Tasks' },
+    contacts: { label: 'People & Contacts' },
+    employees: { label: 'Team Members' },
+    sops: { label: 'Documents & SOPs' },
+    custom: { label: 'Custom Data' }
+  };
+  return info[source as keyof typeof info] || info.workitems;
+};
+
+const getContextualWidgetOptions = (dataSource: string) => {
+  const baseOptions = [
+    {
+      type: 'metric_card',
+      icon: 'trending-up',
+      title: 'Total Count',
+      description: 'Show a single important number',
+      color: '#3b82f6'
+    },
+    {
+      type: 'chart',
+      icon: 'bar-chart-2',
+      title: 'Visual Breakdown',
+      description: 'Compare different categories with charts',
+      color: '#10b981'
+    },
+    {
+      type: 'table',
+      icon: 'table',
+      title: 'Detailed List',
+      description: 'See detailed information in rows and columns',
+      color: '#6366f1'
+    },
+    {
+      type: 'activity_feed',
+      icon: 'clock',
+      title: 'Recent Activity',
+      description: 'Show latest updates and changes',
+      color: '#8b5cf6'
+    }
+  ];
+
+  // Customize examples based on data source
+  switch (dataSource) {
+    case 'workitems':
+      return [
+        { ...baseOptions[0], examples: ['Total tasks', 'Open issues count', 'Average priority score'] },
+        { ...baseOptions[1], examples: ['Tasks by status', 'Issues by department', 'Priority distribution'] },
+        { ...baseOptions[2], examples: ['Task assignments', 'Open issues list', 'Recent work items'] },
+        { ...baseOptions[3], examples: ['Latest task updates', 'Recent assignments', 'Status changes'] },
+        {
+          type: 'progress_bar',
+          icon: 'activity', 
+          title: 'Progress Tracking',
+          description: 'Track completion toward goals',
+          examples: ['Project completion', 'Sprint progress', 'Team performance'],
+          color: '#f59e0b'
+        },
+        {
+          type: 'quick_actions',
+          icon: 'zap',
+          title: 'Quick Actions', 
+          description: 'Fast access to common tasks',
+          examples: ['Create task', 'Add issue', 'Assign work'],
+          color: '#ef4444'
+        }
+      ];
+    case 'contacts':
+      return [
+        { ...baseOptions[0], examples: ['Total contacts', 'New customers', 'Active clients count'] },
+        { ...baseOptions[1], examples: ['Contacts by type', 'Customers by region', 'Status breakdown'] },
+        { ...baseOptions[2], examples: ['Customer list', 'Contact directory', 'Client details'] },
+        { ...baseOptions[3], examples: ['Recent interactions', 'New contacts', 'Client updates'] },
+        {
+          type: 'quick_actions',
+          icon: 'zap',
+          title: 'Quick Actions',
+          description: 'Fast access to contact tasks', 
+          examples: ['Add contact', 'Send message', 'Schedule call'],
+          color: '#ef4444'
+        }
+      ];
+    case 'employees':
+      return [
+        { ...baseOptions[0], examples: ['Total team members', 'Active employees', 'Department size'] },
+        { ...baseOptions[1], examples: ['Staff by department', 'Roles breakdown', 'Performance scores'] },
+        { ...baseOptions[2], examples: ['Employee directory', 'Team roster', 'Staff assignments'] },
+        { ...baseOptions[3], examples: ['Recent hires', 'Team updates', 'Performance reviews'] }
+      ];
+    case 'sops':
+      return [
+        { ...baseOptions[0], examples: ['Total documents', 'Active SOPs', 'Pending reviews'] },
+        { ...baseOptions[1], examples: ['Documents by type', 'SOPs by department', 'Status overview'] },
+        { ...baseOptions[2], examples: ['Document library', 'SOP directory', 'Procedure list'] },
+        { ...baseOptions[3], examples: ['Recent updates', 'New documents', 'Review activity'] }
+      ];
+    default:
+      return baseOptions.map(option => ({ ...option, examples: ['Example 1', 'Example 2', 'Example 3'] }));
+  }
+};
 
 export const WidgetConfigurationStep: React.FC<WidgetConfigurationStepProps> = ({
   formData,
   onChange,
   theme
 }) => {
-  const handleChange = (field: keyof WidgetFormData, value: any) => {
+  const handleChange = (field: keyof LegacyWidgetFormData, value: any) => {
     onChange({
       ...formData,
       [field]: value
@@ -23,7 +128,30 @@ export const WidgetConfigurationStep: React.FC<WidgetConfigurationStepProps> = (
   };
 
   const renderMetricSelection = () => {
-    const availableFields = WidgetDataProvider.getAvailableFields(formData.dataSource);
+    const configOptions = WidgetConfigEngine.getAvailableOptions(formData.type, formData.dataSource);
+    
+    // Get available fields based on the selected aggregation for all widget types
+    const getAvailableFieldsForAggregation = () => {
+      // For widgets that don't use aggregation, return all fields
+      if (!['metric_card', 'chart', 'progress_bar'].includes(formData.type)) {
+        return WidgetDataProvider.getAvailableFields(formData.dataSource);
+      }
+      
+      const selectedAggregation = configOptions.schema.aggregations.find(
+        (agg: AggregationOption) => agg.value === formData.aggregation
+      );
+      
+      if (!selectedAggregation || !selectedAggregation.requiresField) {
+        return []; // Count aggregation doesn't need a field
+      }
+      
+      // Filter fields based on aggregation requirements for metric cards, charts, and progress bars
+      return configOptions.fields
+        .filter(field => selectedAggregation.applicableFieldTypes.includes(field.type))
+        .map(field => field.name);
+    };
+    
+    const availableFields = getAvailableFieldsForAggregation();
     
     const handleSingleFieldChange = (field: string) => {
       onChange({
@@ -56,6 +184,32 @@ export const WidgetConfigurationStep: React.FC<WidgetConfigurationStepProps> = (
     if (['metric_card', 'progress_bar', 'chart'].includes(formData.type)) {
       const selectedField = formData.selectedFields[0] || '';
       
+      // For count aggregation on widgets that use aggregation, no field selection needed
+      if (['metric_card', 'chart', 'progress_bar'].includes(formData.type) && formData.aggregation === 'count') {
+        const message = formData.type === 'metric_card' 
+          ? 'This will count the total number of records matching your filters.'
+          : formData.type === 'chart'
+          ? 'This will count records per category for your chart visualization.'
+          : 'This will count records for progress tracking.';
+          
+        return (
+          <div style={{
+            padding: '1rem',
+            backgroundColor: theme.colors.secondary,
+            borderRadius: '6px',
+            border: `1px solid ${theme.colors.border}`
+          }}>
+            <p style={{
+              fontSize: '0.875rem',
+              color: theme.colors.foreground,
+              margin: 0
+            }}>
+              <strong>Count aggregation selected:</strong> No specific field required. {message}
+            </p>
+          </div>
+        );
+      }
+      
       return (
         <div>
           <label style={{
@@ -65,30 +219,72 @@ export const WidgetConfigurationStep: React.FC<WidgetConfigurationStepProps> = (
             color: theme.colors.foreground,
             marginBottom: '0.5rem'
           }}>
-            {formData.type === 'metric_card' ? 'Select Metric to Display *' : 
-             formData.type === 'chart' ? 'Select Field to Visualize *' :
-             'Select Field for Progress Tracking *'}
+{(() => {
+              if (formData.type === 'metric_card') {
+                return ['sum', 'avg', 'min', 'max'].includes(formData.aggregation) 
+                  ? 'Select Numeric Field for Calculation *'
+                  : 'Select Field for Calculation *';
+              } else if (formData.type === 'chart') {
+                return ['sum', 'avg'].includes(formData.aggregation)
+                  ? 'Select Numeric Field to Aggregate *'
+                  : 'Select Field to Visualize *';
+              } else if (formData.type === 'progress_bar') {
+                return ['sum', 'avg'].includes(formData.aggregation)
+                  ? 'Select Numeric Field for Progress Value *'
+                  : 'Select Field for Progress Tracking *';
+              }
+              return 'Select Field *';
+            })()}
           </label>
-          <select
-            value={selectedField}
-            onChange={(e) => handleSingleFieldChange(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: `1px solid ${theme.colors.border}`,
+          
+          {availableFields.length === 0 ? (
+            <div style={{
+              padding: '1rem',
+              backgroundColor: theme.colors.warning + '10',
+              border: `1px solid ${theme.colors.warning}`,
               borderRadius: '6px',
-              backgroundColor: theme.colors.background,
-              color: theme.colors.foreground,
-              fontSize: '0.875rem'
-            }}
-          >
-            <option value="">Choose a field...</option>
-            {availableFields.map(field => (
-              <option key={field} value={field}>
-                {getFieldLabel(field)}
-              </option>
-            ))}
-          </select>
+              color: theme.colors.foreground
+            }}>
+{(() => {
+                const requiresNumeric = ['sum', 'avg', 'min', 'max'].includes(formData.aggregation);
+                const widgetTypeMsg = formData.type === 'metric_card' 
+                  ? 'metric calculation'
+                  : formData.type === 'chart'
+                  ? 'chart visualization'
+                  : 'progress tracking';
+                  
+                return (
+                  <p style={{ fontSize: '0.875rem', margin: 0 }}>
+                    No compatible fields available for <strong>{formData.aggregation}</strong> aggregation in {widgetTypeMsg}.
+                    {requiresNumeric && (
+                      <span> This aggregation requires numeric fields (numbers, amounts, scores, etc.).</span>
+                    )}
+                  </p>
+                );
+              })()}
+            </div>
+          ) : (
+            <select
+              value={selectedField}
+              onChange={(e) => handleSingleFieldChange(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: '6px',
+                backgroundColor: theme.colors.background,
+                color: theme.colors.foreground,
+                fontSize: '0.875rem'
+              }}
+            >
+              <option value="">Choose a field...</option>
+              {availableFields.map(field => (
+                <option key={field} value={field}>
+                  {getFieldLabel(field)}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       );
     }
@@ -878,116 +1074,133 @@ export const WidgetConfigurationStep: React.FC<WidgetConfigurationStepProps> = (
 
   return (
     <div>
+      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <Icon name="layers" size={48} color={theme.colors.primary} />
+      </div>
+      
       <h3 style={{
-        fontSize: '1.25rem',
+        fontSize: '1.5rem',
         fontWeight: '600',
         color: theme.colors.foreground,
-        marginBottom: '0.5rem'
+        marginBottom: '0.75rem',
+        textAlign: 'center'
       }}>
-        Configure Your Widget
+        What would you like to create?
       </h3>
       <p style={{
-        fontSize: '0.875rem',
+        fontSize: '1rem',
         color: theme.colors.mutedForeground,
-        marginBottom: '1.5rem'
+        marginBottom: '2rem',
+        textAlign: 'center',
+        lineHeight: '1.6'
       }}>
-        Set up the basic properties and appearance of your widget.
+        Choose what type of widget to create with your {getDataSourceInfo(formData.dataSource).label.toLowerCase()} data
       </p>
 
-      <div style={{ display: 'grid', gap: '1.5rem' }}>
-        {/* Widget Title */}
-        <div>
-          <label style={{
-            display: 'block',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: theme.colors.foreground,
-            marginBottom: '0.5rem'
-          }}>
-            Widget Title
-          </label>
-          <Input
-            value={formData.title}
-            onChange={(e) => handleChange('title', e.target.value)}
-            placeholder="Enter widget title"
-          />
-        </div>
-
-        {/* Widget Type and Time Range */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{
-              display: 'block',
+      {/* Context-aware widget type selection */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '1.5rem',
+        maxWidth: '900px',
+        margin: '0 auto 2rem auto'
+      }}>
+        {getContextualWidgetOptions(formData.dataSource).map((option) => (
+          <div
+            key={option.type}
+            onClick={() => handleChange('type', option.type)}
+            style={{
+              padding: '1.5rem',
+              border: formData.type === option.type 
+                ? `2px solid ${theme.colors.primary}` 
+                : `1px solid ${theme.colors.border}`,
+              borderRadius: '12px',
+              backgroundColor: formData.type === option.type 
+                ? `${theme.colors.primary}08` 
+                : theme.colors.background,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              textAlign: 'left',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              if (formData.type !== option.type) {
+                e.currentTarget.style.borderColor = theme.colors.primary + '40';
+                e.currentTarget.style.backgroundColor = theme.colors.muted;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (formData.type !== option.type) {
+                e.currentTarget.style.borderColor = theme.colors.border;
+                e.currentTarget.style.backgroundColor = theme.colors.background;
+              }
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                backgroundColor: `${option.color}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Icon name={option.icon as any} size={20} color={option.color} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <h4 style={{
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  color: theme.colors.foreground,
+                  margin: 0
+                }}>
+                  {option.title}
+                </h4>
+              </div>
+              {formData.type === option.type && (
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: theme.colors.primary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Icon name="check" size={14} color="white" />
+                </div>
+              )}
+            </div>
+            
+            <p style={{
               fontSize: '0.875rem',
-              fontWeight: '500',
-              color: theme.colors.foreground,
-              marginBottom: '0.5rem'
+              color: theme.colors.mutedForeground,
+              margin: '0 0 8px 0',
+              lineHeight: '1.4'
             }}>
-              Widget Type *
-            </label>
-            <select
-              value={formData.type}
-              onChange={(e) => handleChange('type', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: '6px',
-                backgroundColor: theme.colors.background,
-                color: theme.colors.foreground,
-                fontSize: '0.875rem'
-              }}
-            >
-              <option value="metric_card">Metric Card - Single key metric with trend</option>
-              <option value="chart">Chart - Visual data representation (bar, line, pie)</option>
-              <option value="progress_bar">Progress Bar - Goal tracking with target</option>
-              <option value="activity_feed">Activity Feed - Real-time updates and notifications</option>
-              <option value="quick_actions">Quick Actions - Fast access buttons</option>
-              <option value="table">Table - Detailed data in tabular format</option>
-            </select>
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: theme.colors.foreground,
-              marginBottom: '0.5rem'
+              {option.description}
+            </p>
+            
+            <div style={{
+              fontSize: '0.75rem',
+              color: theme.colors.mutedForeground,
+              fontStyle: 'italic'
             }}>
-              Time Range
-            </label>
-            <select
-              value={formData.timeRange}
-              onChange={(e) => handleChange('timeRange', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: '6px',
-                backgroundColor: theme.colors.background,
-                color: theme.colors.foreground,
-                fontSize: '0.875rem'
-              }}
-            >
-              <option value="7d">Last 7 days</option>
-              <option value="30d">Last 30 days</option>
-              <option value="90d">Last 90 days</option>
-              <option value="1y">Last year</option>
-              <option value="all">All time</option>
-            </select>
+              Examples: {option.examples.slice(0, 2).join(', ')}
+            </div>
           </div>
-        </div>
-
-        {/* Metric/Field Selection */}
-        {renderMetricSelection()}
-
-        {/* Widget Type Specific Options */}
-        {renderWidgetTypeOptions()}
-
-        {/* Common Configuration - Only for widgets that need it */}
-        {renderCommonConfiguration()}
+        ))}
       </div>
+
+      {/* Widget Type Specific Options - Data Configuration First */}
+      {renderWidgetTypeOptions()}
+
+      {/* Metric/Field Selection - After Data Configuration */}
+      {renderMetricSelection()}
+
+      {/* Common Configuration - Only for widgets that need it */}
+      {renderCommonConfiguration()}
     </div>
   );
 };

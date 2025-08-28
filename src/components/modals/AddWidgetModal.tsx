@@ -4,10 +4,12 @@ import { Button } from '../ui/Button';
 import { Icon } from '../ui/Icon';
 import { Widget, WidgetCondition, Theme } from '../../types';
 import { DataSourceSelector } from './widget-steps/DataSourceSelector';
-import { WidgetConfigurationStep } from './widget-steps/WidgetConfigurationStep';
+import { WidgetTypeSelector } from './widget-steps/WidgetTypeSelector';
+import { SimpleConfigurationStep } from './widget-steps/SimpleConfigurationStep';
 import { WidgetConditionsStep } from './widget-steps/WidgetConditionsStep';
 import { WidgetPreviewStep } from './widget-steps/WidgetPreviewStep';
 import { WidgetDataProvider } from '../../utils/widgetDataProvider';
+import { theme } from '../../data/theme';
 
 interface AddWidgetModalProps {
   show: boolean;
@@ -16,7 +18,108 @@ interface AddWidgetModalProps {
   theme: Theme;
 }
 
-export interface WidgetFormData {
+// Enhanced type-specific widget form data
+export interface BaseWidgetFormData {
+  title: string;
+  type: Widget['type'];
+  dataSource: 'workitems' | 'contacts' | 'sops' | 'employees' | 'custom';
+  conditions: WidgetCondition[];
+  conditionLogic: 'AND' | 'OR' | 'CUSTOM';
+  timeRange?: '7d' | '30d' | '90d' | '1y' | 'all' | 'custom';
+  customTimeRange?: {
+    start: string;
+    end: string;
+  };
+  color?: string;
+  icon?: string;
+}
+
+export interface MetricCardFormData extends BaseWidgetFormData {
+  type: 'metric_card';
+  aggregation: 'count' | 'sum' | 'avg' | 'min' | 'max' | 'distinct_count';
+  valueField?: string; // Required for sum/avg/min/max/distinct_count
+  displayFormat: 'number' | 'currency' | 'percentage' | 'duration';
+  showTrend: boolean;
+  trendPeriod?: '7d' | '30d' | '90d' | '1y';
+}
+
+export interface ChartFormData extends BaseWidgetFormData {
+  type: 'chart';
+  chartType: 'bar' | 'line' | 'pie' | 'area' | 'donut';
+  groupBy: string; // Required - categorical field
+  aggregation: 'count' | 'sum' | 'avg';
+  valueField?: string; // Required for sum/avg
+  maxCategories: number;
+  sortBy: 'value' | 'label';
+  sortOrder: 'asc' | 'desc';
+  colorScheme: 'default' | 'status' | 'priority' | 'custom';
+  customColors?: string[];
+  showLabels: boolean;
+  showLegend: boolean;
+}
+
+export interface ProgressBarFormData extends BaseWidgetFormData {
+  type: 'progress_bar';
+  progressType: 'percentage' | 'count' | 'value';
+  currentValueAggregation: 'count' | 'sum' | 'avg';
+  currentValueField?: string; // Required for sum/avg
+  targetValue: number;
+  displayFormat: 'percentage' | 'fraction' | 'both';
+  showTarget: boolean;
+  warningThreshold?: number;
+}
+
+export interface ActivityFeedFormData extends BaseWidgetFormData {
+  type: 'activity_feed';
+  dateField: string; // Required - date field to sort by
+  activityTimeRange: '1d' | '7d' | '30d';
+  maxItems: number;
+  showTimestamps: boolean;
+  showAvatars: boolean;
+  groupByDate: boolean;
+}
+
+export interface TableFormData extends BaseWidgetFormData {
+  type: 'table';
+  selectedColumns: string[]; // Required - minimum 2, maximum 8
+  primaryColumn: string; // Main identifier column
+  maxRows: number;
+  enableSearch: boolean;
+  enableSort: boolean;
+  defaultSort?: {
+    field: string;
+    order: 'asc' | 'desc';
+  };
+  showRowNumbers: boolean;
+  alternateRowColors: boolean;
+  compactMode: boolean;
+}
+
+export interface QuickActionsFormData extends BaseWidgetFormData {
+  type: 'quick_actions';
+  actions: {
+    label: string;
+    icon: string;
+    action: 'navigate' | 'modal' | 'external';
+    target: string;
+    color?: string;
+  }[];
+  actionStyle: 'buttons' | 'list' | 'grid';
+  actionSize: 'small' | 'medium' | 'large';
+  showIcons: boolean;
+}
+
+// Union type for all widget form data
+export type WidgetFormData = 
+  | MetricCardFormData 
+  | ChartFormData 
+  | ProgressBarFormData 
+  | ActivityFeedFormData 
+  | TableFormData 
+  | QuickActionsFormData;
+
+// Legacy support for existing code - simplified interface
+export interface LegacyWidgetFormData {
   title: string;
   type: Widget['type'];
   dataSource: 'workitems' | 'contacts' | 'sops' | 'employees' | 'custom';
@@ -45,7 +148,7 @@ export interface WidgetFormData {
   maxActions?: number;
 }
 
-const initialFormData: WidgetFormData = {
+const initialFormData: LegacyWidgetFormData = {
   title: '',
   type: 'metric_card',
   dataSource: 'workitems',
@@ -68,7 +171,7 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
   theme
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<WidgetFormData>(initialFormData);
+  const [formData, setFormData] = useState<LegacyWidgetFormData>(initialFormData);
   const [previewData, setPreviewData] = useState<any[]>([]);
 
   const resetForm = () => {
@@ -83,8 +186,8 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
   };
 
   const handleNext = () => {
-    if (currentStep < 4) {
-      if (currentStep === 3) {
+    if (currentStep < 5) {
+      if (currentStep === 4) {
         generatePreviewData();
       }
       setCurrentStep(currentStep + 1);
@@ -215,6 +318,57 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
     handleClose();
   };
 
+  const getStepTitle = () => {
+    const titleStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      fontSize: '1.125rem',
+      fontWeight: '600',
+      color: theme.colors.foreground
+    };
+
+    switch (currentStep) {
+      case 1:
+        return (
+          <div style={titleStyle}>
+            <Icon name="help-circle" size={20} color={theme.colors.primary} />
+            Where should we get this information?
+          </div>
+        );
+      case 2:
+        return (
+          <div style={titleStyle}>
+            <Icon name="layers" size={20} color={theme.colors.primary} />
+            What would you like to create?
+          </div>
+        );
+      case 3:
+        return (
+          <div style={titleStyle}>
+            <Icon name="settings" size={20} color={theme.colors.primary} />
+            How should we show it?
+          </div>
+        );
+      case 4:
+        return (
+          <div style={titleStyle}>
+            <Icon name="filter" size={20} color={theme.colors.primary} />
+            Any filters or conditions?
+          </div>
+        );
+      case 5:
+        return (
+          <div style={titleStyle}>
+            <Icon name="eye" size={20} color={theme.colors.primary} />
+            Perfect! Here's your widget
+          </div>
+        );
+      default:
+        return `Add New Widget - Step ${currentStep} of 5`;
+    }
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -227,7 +381,7 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
         );
       case 2:
         return (
-          <WidgetConfigurationStep
+          <WidgetTypeSelector
             formData={formData}
             onChange={setFormData}
             theme={theme}
@@ -235,13 +389,21 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
         );
       case 3:
         return (
-          <WidgetConditionsStep
+          <SimpleConfigurationStep
             formData={formData}
             onChange={setFormData}
             theme={theme}
           />
         );
       case 4:
+        return (
+          <WidgetConditionsStep
+            formData={formData}
+            onChange={setFormData}
+            theme={theme}
+          />
+        );
+      case 5:
         return (
           <WidgetPreviewStep
             formData={formData}
@@ -258,7 +420,7 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
     <Modal
       show={show}
       onClose={handleClose}
-      title={`Add New Widget - Step ${currentStep} of 4`}
+      title={getStepTitle()}
       size="xl"
     >
       {/* Progress Indicator */}
@@ -268,7 +430,7 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
         marginBottom: '2rem',
         padding: '0 1rem'
       }}>
-        {[1, 2, 3, 4].map((step) => (
+        {[1, 2, 3, 4, 5].map((step) => (
           <React.Fragment key={step}>
             <div style={{
               width: '32px',
@@ -284,7 +446,7 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
             }}>
               {step}
             </div>
-            {step < 4 && (
+            {step < 5 && (
               <div style={{
                 flex: 1,
                 height: '2px',
@@ -330,7 +492,7 @@ export const AddWidgetModal: React.FC<AddWidgetModalProps> = ({
             Cancel
           </Button>
           
-          {currentStep < 4 ? (
+          {currentStep < 5 ? (
             <Button onClick={handleNext}>
               Next
               <Icon name="chevronRight" size={14} color="white" />

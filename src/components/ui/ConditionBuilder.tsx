@@ -804,45 +804,6 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
         </div>
       </div>
 
-      {/* Logic Selection */}
-      {conditions.length > 1 && (
-        <div style={{
-          marginBottom: '1rem',
-          padding: '0.75rem',
-          backgroundColor: theme.colors.secondary,
-          borderRadius: '6px'
-        }}>
-          <label style={{
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            marginBottom: '0.5rem',
-            display: 'block'
-          }}>
-            Condition Logic:
-          </label>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            {(['AND', 'OR', 'CUSTOM'] as const).map(logic => (
-              <label key={logic} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem',
-                fontSize: '0.875rem',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="radio"
-                  checked={conditionLogic === logic}
-                  onChange={() => onLogicChange(logic)}
-                />
-                <span>{logic}</span>
-                {logic === 'AND' && <Badge variant="secondary" style={{ fontSize: '0.75rem', marginLeft: '0.25rem' }}>All must match</Badge>}
-                {logic === 'OR' && <Badge variant="secondary" style={{ fontSize: '0.75rem', marginLeft: '0.25rem' }}>Any can match</Badge>}
-                {logic === 'CUSTOM' && <Badge variant="secondary" style={{ fontSize: '0.75rem', marginLeft: '0.25rem' }}>Mixed logic</Badge>}
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Preview Mode */}
       {previewMode && (

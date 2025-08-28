@@ -2,11 +2,11 @@ import React from 'react';
 import { Theme } from '../../../types';
 import { ConditionBuilder } from '../../ui/ConditionBuilder';
 import { WidgetDataProvider } from '../../../utils/widgetDataProvider';
-import { WidgetFormData } from '../AddWidgetModal';
+import { LegacyWidgetFormData } from '../AddWidgetModal';
 
 interface WidgetConditionsStepProps {
-  formData: WidgetFormData;
-  onChange: (formData: WidgetFormData) => void;
+  formData: LegacyWidgetFormData;
+  onChange: (formData: LegacyWidgetFormData) => void;
   theme: Theme;
 }
 
@@ -40,7 +40,7 @@ export const WidgetConditionsStep: React.FC<WidgetConditionsStepProps> = ({
     });
   };
 
-  const handleSortChange = (field: keyof WidgetFormData, value: any) => {
+  const handleSortChange = (field: keyof LegacyWidgetFormData, value: any) => {
     onChange({
       ...formData,
       [field]: value
@@ -50,118 +50,81 @@ export const WidgetConditionsStep: React.FC<WidgetConditionsStepProps> = ({
   const availableFields = WidgetDataProvider.getAvailableFields(formData.dataSource);
 
   return (
-    <div>
-      <h3 style={{
-        fontSize: '1.25rem',
-        fontWeight: '600',
-        color: theme.colors.foreground,
-        marginBottom: '0.5rem'
-      }}>
-        Configure Data & Conditions
-      </h3>
-      <p style={{
-        fontSize: '0.875rem',
-        color: theme.colors.mutedForeground,
-        marginBottom: '1.5rem'
-      }}>
-        Set up data filters and field selections for your widget.
-      </p>
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
 
-      <div style={{ display: 'grid', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gap: '2rem' }}>
 
-        {/* Advanced Configuration */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: theme.colors.foreground,
-              marginBottom: '0.5rem'
-            }}>
-              Sort By
-            </label>
-            <select
-              value={formData.sortBy}
-              onChange={(e) => handleSortChange('sortBy', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: '6px',
-                backgroundColor: theme.colors.background,
-                color: theme.colors.foreground,
-                fontSize: '0.875rem'
-              }}
-            >
-              <option value="">No sorting</option>
-              {availableFields.map(field => (
-                <option key={field} value={field}>{field}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: theme.colors.foreground,
-              marginBottom: '0.5rem'
-            }}>
-              Sort Order
-            </label>
-            <select
-              value={formData.sortOrder}
-              onChange={(e) => handleSortChange('sortOrder', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: '6px',
-                backgroundColor: theme.colors.background,
-                color: theme.colors.foreground,
-                fontSize: '0.875rem'
-              }}
-            >
-              <option value="desc">Descending</option>
-              <option value="asc">Ascending</option>
-            </select>
+        {/* Time Range - Moved from Step 3 */}
+        <div style={{
+          padding: '1.5rem',
+          border: `1px solid ${theme.colors.border}`,
+          borderRadius: '12px',
+          backgroundColor: theme.colors.background
+        }}>
+          <h4 style={{
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: theme.colors.foreground,
+            margin: '0 0 12px 0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke={theme.colors.primary} strokeWidth="2"/>
+              <line x1="16" y1="2" x2="16" y2="6" stroke={theme.colors.primary} strokeWidth="2"/>
+              <line x1="8" y1="2" x2="8" y2="6" stroke={theme.colors.primary} strokeWidth="2"/>
+              <line x1="3" y1="10" x2="21" y2="10" stroke={theme.colors.primary} strokeWidth="2"/>
+            </svg>
+            Time Period
+          </h4>
+          <p style={{
+            fontSize: '0.875rem',
+            color: theme.colors.mutedForeground,
+            margin: '0 0 1rem 0'
+          }}>
+            How far back should we look for data?
+          </p>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+            gap: '8px'
+          }}>
+            {[
+              { value: '7d', label: 'Last Week' },
+              { value: '30d', label: 'Last Month' },
+              { value: '90d', label: '3 Months' },
+              { value: '1y', label: 'Last Year' },
+              { value: 'all', label: 'All Time' }
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => onChange({ ...formData, timeRange: option.value as LegacyWidgetFormData['timeRange'] })}
+                style={{
+                  padding: '8px 12px',
+                  border: formData.timeRange === option.value
+                    ? `2px solid ${theme.colors.primary}`
+                    : `1px solid ${theme.colors.border}`,
+                  borderRadius: '6px',
+                  backgroundColor: formData.timeRange === option.value
+                    ? `${theme.colors.primary}20`
+                    : theme.colors.background,
+                  color: formData.timeRange === option.value
+                    ? theme.colors.primary
+                    : theme.colors.foreground,
+                  fontSize: '0.875rem',
+                  fontWeight: formData.timeRange === option.value ? '600' : '400',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Group By (for charts) */}
-        {formData.type === 'chart' && (
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: theme.colors.foreground,
-              marginBottom: '0.5rem'
-            }}>
-              Group By (for chart visualization)
-            </label>
-            <select
-              value={formData.groupBy}
-              onChange={(e) => handleSortChange('groupBy', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: `1px solid ${theme.colors.border}`,
-                borderRadius: '6px',
-                backgroundColor: theme.colors.background,
-                color: theme.colors.foreground,
-                fontSize: '0.875rem'
-              }}
-            >
-              <option value="">No grouping</option>
-              {availableFields.map(field => (
-                <option key={field} value={field}>{field}</option>
-              ))}
-            </select>
-          </div>
-        )}
 
         {/* Data Conditions */}
         <div>
