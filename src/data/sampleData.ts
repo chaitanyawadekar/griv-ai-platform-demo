@@ -720,11 +720,14 @@ export const sampleWidgets: Widget[] = [
     position: { x: 0, y: 0, w: 3, h: 2 },
     dataSource: {
       type: 'workitems',
-      filters: [{
+      conditions: [{
+        id: 'cond_1',
         field: 'status',
         operator: 'not_equals',
-        value: 'Closed'
+        value: 'Closed',
+        logicalOperator: 'AND'
       }],
+      conditionLogic: 'AND',
       aggregation: 'count',
       timeRange: '7d'
     },
@@ -763,15 +766,20 @@ export const sampleWidgets: Widget[] = [
     position: { x: 7, y: 0, w: 3, h: 2 },
     dataSource: {
       type: 'workitems',
-      filters: [{
+      conditions: [{
+        id: 'cond_2a',
         field: 'assignee',
         operator: 'equals',
-        value: 'John Smith'
+        value: 'John Smith',
+        logicalOperator: 'AND'
       }, {
+        id: 'cond_2b',
         field: 'status',
         operator: 'equals',
-        value: 'Closed'
+        value: 'Closed',
+        logicalOperator: 'AND'
       }],
+      conditionLogic: 'AND',
       aggregation: 'count',
       timeRange: '7d'
     },
@@ -839,11 +847,14 @@ export const sampleWidgets: Widget[] = [
     position: { x: 0, y: 3, w: 2, h: 2 },
     dataSource: {
       type: 'contacts',
-      filters: [{
+      conditions: [{
+        id: 'cond_3',
         field: 'status',
         operator: 'equals',
-        value: 'Active'
+        value: 'Active',
+        logicalOperator: 'AND'
       }],
+      conditionLogic: 'AND',
       aggregation: 'count',
       timeRange: '7d'
     },

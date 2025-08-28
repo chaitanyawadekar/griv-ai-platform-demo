@@ -277,16 +277,62 @@ export type WidgetType =
 
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'donut';
 
+// Widget Condition System - Comprehensive filtering
+export type WidgetConditionOperator = 
+  // Basic comparison
+  | 'equals' | 'not_equals'
+  // Text operations
+  | 'contains' | 'not_contains' | 'starts_with' | 'ends_with'
+  // Numeric/Date operations  
+  | 'greater_than' | 'greater_than_or_equal' | 'less_than' | 'less_than_or_equal'
+  // Array operations
+  | 'in' | 'not_in' | 'includes_any' | 'includes_all'
+  // Special operations
+  | 'is_empty' | 'is_not_empty' | 'is_null' | 'is_not_null'
+  // Date specific
+  | 'is_today' | 'is_yesterday' | 'is_this_week' | 'is_this_month' | 'is_this_year'
+  | 'last_n_days' | 'next_n_days' | 'between_dates'
+  // Advanced text
+  | 'matches_regex' | 'word_count_equals' | 'char_count_greater_than';
+
+export interface WidgetCondition {
+  id: string;
+  field: string;
+  operator: WidgetConditionOperator;
+  value: string | number | string[] | boolean | null;
+  // For date range operations
+  secondValue?: string | number;
+  // For advanced operations
+  caseSensitive?: boolean;
+  // For grouping conditions
+  logicalOperator?: 'AND' | 'OR';
+  // For nested conditions
+  isGroup?: boolean;
+  conditions?: WidgetCondition[];
+}
+
 export interface WidgetDataSource {
   type: 'workitems' | 'contacts' | 'sops' | 'employees' | 'custom';
-  filters?: {
-    field: string;
-    operator: 'equals' | 'not_equals' | 'contains' | 'greater_than' | 'less_than';
-    value: string | number;
-  }[];
+  // Advanced condition system
+  conditions?: WidgetCondition[];
+  conditionLogic?: 'AND' | 'OR' | 'CUSTOM'; // CUSTOM allows mixed AND/OR
+  // Grouping and aggregation
   groupBy?: string;
-  aggregation?: 'count' | 'sum' | 'avg' | 'min' | 'max';
-  timeRange?: '7d' | '30d' | '90d' | '1y' | 'all';
+  aggregation?: 'count' | 'sum' | 'avg' | 'min' | 'max' | 'distinct_count';
+  // Time-based filtering
+  timeRange?: '7d' | '30d' | '90d' | '1y' | 'all' | 'custom';
+  customTimeRange?: {
+    start: string;
+    end: string;
+  };
+  // Sorting
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  // Limiting results
+  limit?: number;
+  // For performance
+  cacheEnabled?: boolean;
+  cacheDuration?: number; // minutes
 }
 
 export interface Widget {
@@ -302,6 +348,12 @@ export interface Widget {
     icon?: string;
     refreshInterval?: number; // minutes
     customQuery?: string;
+    
+    // Widget type-specific fields
+    displayFormat?: 'number' | 'currency' | 'percentage' | 'duration';
+    progressTarget?: number;
+    progressType?: 'percentage' | 'count' | 'value';
+    activityType?: 'recent' | 'updates' | 'alerts' | 'assignments';
   };
   createdAt: string;
   updatedAt: string;

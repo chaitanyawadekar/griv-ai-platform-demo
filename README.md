@@ -4,7 +4,7 @@
 
 ## 🌐 Live Demo
 
-**🔗 [View Live Demo](https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app)**
+**🔗 [View Live Demo](https://web-demo-g35n3ob53-chaitanyas-projects-9ea51a2a.vercel.app)**
 
 ## 📂 Repository
 
@@ -38,11 +38,11 @@ npm start
 ## 🎨 Core Features
 
 ### **Primary Modules**
-- 📊 **Dashboard** - Real-time analytics with interactive widgets and KPI tracking
+- 🎯 **Overview Dashboard** - Interactive drag-and-drop widgets with AI insights panel
 - 📝 **Workitems** - Advanced CRUD management with professional data tables
 - 👥 **Contacts** - Comprehensive contact management with type-based organization
-- 🔄 **Workflows** - Visual workflow builder with step-by-step automation
-- 🤖 **AI Assistant** - Integrated chat interface with floating button and overlay modal
+- 📊 **Analytics** - Data visualization and reporting dashboard
+- 🤖 **AI Assistant** - Integrated chat interface with floating brain button
 - ⚙️ **Settings** - Full-screen configuration management with tabbed navigation
 
 ### **UI/UX Design System**
@@ -73,27 +73,43 @@ Features:
 
 ---
 
-### **2. 📊 Dashboard Screen**
+### **2. 🎯 Overview Dashboard Screen**
 ```
-Layout Structure:
-├── Header with navigation and user menu
-├── KPI Cards (4-column grid)
-│   ├── Total Workitems (with trending indicator)
-│   ├── Active Contacts (with growth metrics)  
-│   ├── Completed Workflows (with success rate)
-│   └── AI Tokens Used (with usage tracking)
-├── Recent Activities Section
-│   ├── Recent Workitems (last 3 with status)
-│   ├── Activity Timeline (with timestamps)
-│   └── Quick Actions Panel
-└── Token Usage Widget (circular progress)
+Advanced Widget-Based Layout:
+├── Header with drag instructions and Add Widget CTA
+├── Drag & Drop Grid System (3-4 columns responsive)
+│   ├── Metric Cards (1×1 grid cells)
+│   │   ├── Today's Workitems (with trend)
+│   │   ├── New Contacts This Week (with growth)
+│   │   └── My Daily Progress (progress bar)
+│   ├── Large Widgets (2×2 grid cells)
+│   │   ├── Priority Breakdown (pie chart)
+│   │   ├── Department Performance (bar chart)
+│   │   ├── Recent Activity Feed (scrollable list)
+│   │   └── Personal Schedule (time-based table)
+│   └── Quick Actions Panel (1×1 grid cell)
+├── AI Insights Panel (Collapsible Right Sidebar)
+│   ├── AI-powered trend analysis
+│   ├── Anomaly detection insights
+│   ├── Predictive recommendations
+│   ├── Performance optimization tips
+│   └── Actionable suggestions with confidence scores
+└── Widget Management System
+    ├── Add Widget Modal (6 widget types)
+    ├── Widget Configuration (colors, icons, data sources)
+    ├── Delete Widget with confirmation
+    └── Live widget preview
 ```
 
-**Detailed Components:**
-- **KPI Cards**: Each with icon, metric, description, and trend indicator
-- **Activity Feed**: Real-time updates with user avatars and timestamps
-- **Quick Actions**: Create workitem, add contact, start workflow buttons
-- **Statistics Widgets**: Charts and progress bars showing platform usage
+**Advanced Dashboard Features:**
+- **2D Drag & Drop**: Move widgets anywhere horizontally and vertically
+- **Smart Grid System**: Responsive 3-4 column layout adapting to AI panel state
+- **6 Widget Types**: Metrics, Charts, Progress, Activity, Quick Actions, Tables
+- **Widget Customization**: Colors, icons, data sources, chart types, time ranges
+- **AI Insights Integration**: Collapsible panel with intelligent recommendations
+- **Visual Feedback**: Drop zones, drag handles, hover effects, animations
+- **Professional Polish**: No overlapping, consistent sizing, smooth transitions
+- **Live Configuration**: Real-time widget preview and instant updates
 
 ---
 
@@ -786,7 +802,7 @@ GitHub Integration:
 ├── Branch: master
 ├── Auto-Deploy: Enabled on push
 ├── Build Status: Successful
-└── Deployment URL: https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app
+└── Deployment URL: https://web-demo-g35n3ob53-chaitanyas-projects-9ea51a2a.vercel.app
 ```
 
 ### **Performance Metrics**
@@ -921,7 +937,7 @@ Component Organization:
 ## 🔗 Resources & Links
 
 ### **Live Application**
-- **🌐 Production URL**: [https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app](https://web-demo-bgro0ul3l-chaitanyas-projects-9ea51a2a.vercel.app)
+- **🌐 Production URL**: [https://web-demo-g35n3ob53-chaitanyas-projects-9ea51a2a.vercel.app](https://web-demo-g35n3ob53-chaitanyas-projects-9ea51a2a.vercel.app)
 - **📁 GitHub Repository**: [https://github.com/chaitanyawadekar/griv-ai-platform-demo](https://github.com/chaitanyawadekar/griv-ai-platform-demo)
 - **🚀 Vercel Dashboard**: [https://vercel.com/chaitanyas-projects-9ea51a2a/web-demo](https://vercel.com/chaitanyas-projects-9ea51a2a/web-demo)
 
@@ -966,4 +982,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Last Updated: August 2024 • Version 2.1 • Production Ready*
+*Last Updated: August 2024 • Version 3.0 • Production Ready with Advanced Drag & Drop Dashboard*
