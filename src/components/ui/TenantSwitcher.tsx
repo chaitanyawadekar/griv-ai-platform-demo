@@ -77,13 +77,18 @@ export const TenantSwitcher: React.FC<TenantSwitcherProps> = ({
             <div style={{ fontWeight: '600' }}>
               {currentTenant.tenant.displayName}
             </div>
-            <div style={{ 
-              fontSize: '0.75rem', 
-              color: theme.colors.mutedForeground,
-              textTransform: 'capitalize'
-            }}>
-              {currentTenant.role}
-            </div>
+            {/* Token Display with Pulsing Animation */}
+            {currentTenant.tenant.tokens && (
+              <div style={{
+                fontSize: '0.7rem',
+                fontWeight: '600',
+                color: theme.colors.primary,
+                animation: 'pulse 2s infinite',
+                marginTop: '2px'
+              }}>
+                {currentTenant.tenant.tokens.current.toLocaleString()} tokens
+              </div>
+            )}
           </div>
         </div>
         <Icon 
@@ -212,18 +217,6 @@ export const TenantSwitcher: React.FC<TenantSwitcherProps> = ({
                           {userTenant.tenant.displayName}
                         </span>
                         
-                        {userTenant.tenant.id === currentTenantId && (
-                          <Badge 
-                            variant="default" 
-                            style={{ 
-                              fontSize: '0.625rem',
-                              backgroundColor: theme.colors.primary,
-                              color: 'white'
-                            }}
-                          >
-                            Current
-                          </Badge>
-                        )}
                         
                         {userTenant.isDefault && userTenant.tenant.id !== currentTenantId && (
                           <Badge 
@@ -238,20 +231,11 @@ export const TenantSwitcher: React.FC<TenantSwitcherProps> = ({
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
+                        justifyContent: 'space-between',
                         gap: '0.75rem',
                         fontSize: '0.75rem',
                         color: theme.colors.mutedForeground
                       }}>
-                        <span style={{
-                          color: getRoleColor(userTenant.role),
-                          fontWeight: '500',
-                          textTransform: 'capitalize'
-                        }}>
-                          {userTenant.role}
-                        </span>
-                        
-                        <span>•</span>
-                        
                         <span style={{
                           color: getPlanColor(userTenant.tenant.plan),
                           textTransform: 'capitalize',
@@ -260,11 +244,14 @@ export const TenantSwitcher: React.FC<TenantSwitcherProps> = ({
                           {userTenant.tenant.plan}
                         </span>
                         
-                        <span>•</span>
-                        
-                        <span>
-                          {formatLastAccessed(userTenant.lastAccessed)}
-                        </span>
+                        {userTenant.tenant.tokens && (
+                          <span style={{
+                            color: theme.colors.primary,
+                            fontWeight: '600'
+                          }}>
+                            {userTenant.tenant.tokens.current.toLocaleString()} tokens
+                          </span>
+                        )}
                       </div>
                     </div>
 

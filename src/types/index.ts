@@ -22,6 +22,9 @@ export interface Tenant {
   permissions: string[];
   createdAt: string;
   lastAccessed?: string;
+  tokens?: {
+    current: number;
+  };
 }
 
 export interface UserTenant {

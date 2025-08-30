@@ -24,7 +24,10 @@ export const sampleTenants: Tenant[] = [
     },
     permissions: ['admin', 'create', 'edit', 'delete', 'view', 'export', 'manage_users'],
     createdAt: '2024-01-15T10:00:00Z',
-    lastAccessed: '2025-01-30T15:30:00Z'
+    lastAccessed: '2025-01-30T15:30:00Z',
+    tokens: {
+      current: 127500
+    }
   },
   {
     id: 'startup-inc',
@@ -48,7 +51,10 @@ export const sampleTenants: Tenant[] = [
     },
     permissions: ['create', 'edit', 'delete', 'view', 'export'],
     createdAt: '2024-03-10T14:20:00Z',
-    lastAccessed: '2025-01-29T09:45:00Z'
+    lastAccessed: '2025-01-29T09:45:00Z',
+    tokens: {
+      current: 42800
+    }
   },
   {
     id: 'consulting-llc',
@@ -72,7 +78,10 @@ export const sampleTenants: Tenant[] = [
     },
     permissions: ['create', 'edit', 'view', 'export'],
     createdAt: '2024-05-22T11:15:00Z',
-    lastAccessed: '2025-01-28T16:20:00Z'
+    lastAccessed: '2025-01-28T16:20:00Z',
+    tokens: {
+      current: 18750
+    }
   },
   {
     id: 'small-biz',
@@ -96,7 +105,10 @@ export const sampleTenants: Tenant[] = [
     },
     permissions: ['create', 'edit', 'view'],
     createdAt: '2025-01-15T08:30:00Z',
-    lastAccessed: '2025-01-30T12:10:00Z'
+    lastAccessed: '2025-01-30T12:10:00Z',
+    tokens: {
+      current: 950
+    }
   }
 ];
 
