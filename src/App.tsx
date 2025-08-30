@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import './App.css';
 
 // Import types
-import { Screen, SOP, SOPCondition, Employee, Department, Workitem, Contact } from './types';
+import { Screen, SOP, SOPCondition, Employee, Department, Workitem, Contact, User } from './types';
 
 // Import data
 import { theme } from './data/theme';
 import { sops, employees, departments, sampleWorkitems, sampleContacts, workitemTypes, contactTypes } from './data/sampleData';
+import { currentUser } from './data/tenantData';
 
 // Import UI components
 import { Button, Icon, Modal } from './components/ui';
+import { TenantSwitcher } from './components/ui/TenantSwitcher';
 
 // Import screen components
 import { OverviewScreen } from './components/screens/OverviewScreen';
@@ -23,6 +25,12 @@ const App: React.FC = () => {
   // Navigation state
   const [activeScreen, setActiveScreen] = useState<Screen>('overview');
   const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  // User and tenant state
+  const [user, setUser] = useState<User>(currentUser);
+  const [currentTenantId, setCurrentTenantId] = useState<string>(
+    currentUser.currentTenantId || currentUser.tenants[0]?.tenant.id || ''
+  );
 
   // Data state
   const [sopsState, setSopsState] = useState<SOP[]>(sops);
@@ -149,6 +157,34 @@ const App: React.FC = () => {
   const handleBackToWorkitems = () => {
     setSelectedWorkitem(null);
     setShowWorkitemDetail(false);
+  };
+
+  // Tenant switching function
+  const handleTenantSwitch = (tenantId: string) => {
+    setCurrentTenantId(tenantId);
+    // Update user's current tenant
+    const updatedUser = {
+      ...user,
+      currentTenantId: tenantId
+    };
+    setUser(updatedUser);
+    
+    // Update last accessed time for the selected tenant
+    const updatedTenants = user.tenants.map(ut => 
+      ut.tenant.id === tenantId 
+        ? { ...ut, lastAccessed: new Date().toISOString() }
+        : ut
+    );
+    setUser({
+      ...updatedUser,
+      tenants: updatedTenants
+    });
+    
+    // In a real app, you would:
+    // - Store the preference in localStorage/sessionStorage
+    // - Send API call to update user's default tenant
+    // - Potentially reload data for the new tenant
+    console.log(`Switched to tenant: ${tenantId}`);
   };
 
   // Contact management functions
@@ -288,7 +324,7 @@ const App: React.FC = () => {
         top: 0,
         zIndex: 100
       }}>
-        {/* Logo */}
+        {/* Logo and Tenant Switcher */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -308,14 +344,12 @@ const App: React.FC = () => {
           }}>
             G
           </div>
-          <h1 style={{
-            fontSize: '1.25rem',
-            fontWeight: '700',
-            margin: 0,
-            color: theme.colors.foreground
-          }}>
-            Griv AI Platform
-          </h1>
+          <TenantSwitcher
+            user={user}
+            currentTenantId={currentTenantId}
+            onTenantSwitch={handleTenantSwitch}
+            theme={theme}
+          />
         </div>
 
         {/* Navigation */}
@@ -362,8 +396,10 @@ const App: React.FC = () => {
           ))}
         </nav>
 
-        {/* User Menu */}
-        <div style={{ position: 'relative' }}>
+        {/* Right side controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* User Menu */}
+          <div style={{ position: 'relative' }}>
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
             style={{
@@ -457,6 +493,7 @@ const App: React.FC = () => {
               </div>
             </div>
           )}
+          </div>
         </div>
       </header>
 

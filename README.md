@@ -97,6 +97,8 @@ Advanced Widget-Based Layout:
 └── Widget Management System
     ├── Add Widget Modal (6 widget types)
     ├── Widget Configuration (colors, icons, data sources)
+    ├── Hover-Only Controls (three dots menu)
+    ├── Edit/Delete Actions (dropdown menu)
     ├── Delete Widget with confirmation
     └── Live widget preview
 ```
@@ -110,6 +112,9 @@ Advanced Widget-Based Layout:
 - **Visual Feedback**: Drop zones, drag handles, hover effects, animations
 - **Professional Polish**: No overlapping, consistent sizing, smooth transitions
 - **Live Configuration**: Real-time widget preview and instant updates
+- **Hover-Only Controls**: Widget management controls appear only on hover for clean UI
+- **Three Dots Menu**: Centralized Edit/Delete actions in professional dropdown menu
+- **Click-Outside Close**: Smart menu management with intuitive interaction patterns
 
 ---
 
@@ -500,6 +505,38 @@ Subscription Management:
 
 ## 🎯 Advanced Features
 
+### **Smart Widget Configuration System**
+```
+Enhanced Widget Creation Engine:
+├── Context-Aware Widget Builder
+│   ├── Widget type + Data source intelligence
+│   ├── Dynamic form fields based on combinations
+│   ├── Field type detection (numeric, categorical, date, text, boolean)
+│   └── Aggregation method filtering by field compatibility
+├── Smart Field Analysis
+│   ├── Automatic field categorization
+│   ├── Data type inference and validation
+│   ├── Color-coded field display in UI
+│   └── Optimal configuration suggestions
+├── Intelligent Configuration Engine
+│   ├── Widget schema definitions for all 6 types
+│   ├── Data source field mapping and analysis
+│   ├── Smart aggregation recommendations
+│   └── Preview value generation for suggestions
+├── Type-Specific Widget Forms
+│   ├── MetricCardFormData (aggregation, display format, trend)
+│   ├── ChartFormData (chart type, groupBy, color schemes)
+│   ├── ProgressBarFormData (progress type, targets, thresholds)
+│   ├── ActivityFeedFormData (date fields, time ranges)
+│   ├── TableFormData (column selection, sorting, search)
+│   └── QuickActionsFormData (action definitions, styling)
+└── Enhanced DataSourceSelector
+    ├── Field analysis preview (6 fields shown)
+    ├── Smart suggestions with preview values
+    ├── Recommended configurations marked
+    └── Data source statistics and record counts
+```
+
 ### **Field Management System**
 ```
 Custom Field Configuration:
@@ -625,13 +662,36 @@ Application Structure:
 ├── Functional Components with Hooks
 ├── Custom CSS-in-JS styling
 ├── Component-based architecture
-└── State management with useState/useEffect
+├── State management with useState/useEffect
+└── Enhanced Widget Configuration Engine
+    ├── Smart field analysis and categorization
+    ├── Context-aware form generation
+    ├── Type-specific widget schemas
+    └── Intelligent suggestion algorithms
 ```
 
 ### **File Structure**
 ```
 web-demo/
 ├── src/
+│   ├── components/
+│   │   ├── modals/
+│   │   │   ├── AddWidgetModal.tsx (Enhanced with type-specific forms)
+│   │   │   └── widget-steps/
+│   │   │       ├── DataSourceSelector.tsx (Smart field analysis)
+│   │   │       ├── WidgetConfigurationStep.tsx
+│   │   │       ├── WidgetConditionsStep.tsx
+│   │   │       └── WidgetPreviewStep.tsx (Real-time preview)
+│   │   └── ui/
+│   │       ├── Icon.tsx
+│   │       ├── Modal.tsx
+│   │       ├── Button.tsx
+│   │       └── ConditionBuilder.tsx
+│   ├── utils/
+│   │   ├── widgetConfigEngine.ts (NEW: Smart configuration logic)
+│   │   └── widgetDataProvider.ts (Enhanced with field analysis)
+│   ├── types/
+│   │   └── index.ts (Updated with type-specific interfaces)
 │   ├── App.tsx (6,300+ lines)
 │   │   ├── Theme configuration
 │   │   ├── Icon system (30+ SVG icons)
@@ -644,7 +704,7 @@ web-demo/
 ├── public/
 │   └── index.html
 ├── package.json
-├── README.md
+├── README.md (Updated with smart widget documentation)
 └── .gitignore
 ```
 
@@ -982,4 +1042,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Last Updated: August 2024 • Version 3.0 • Production Ready with Advanced Drag & Drop Dashboard*
+*Last Updated: August 2024 • Version 3.2 • Production Ready with Smart Widget Configuration System*

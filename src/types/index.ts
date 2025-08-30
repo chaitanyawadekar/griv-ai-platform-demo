@@ -1,3 +1,55 @@
+// Multi-tenant types
+export interface Tenant {
+  id: string;
+  name: string;
+  displayName: string;
+  logo?: string;
+  subdomain?: string;
+  plan: 'free' | 'pro' | 'enterprise';
+  status: 'active' | 'suspended' | 'trial';
+  settings: {
+    theme?: 'light' | 'dark' | 'auto';
+    timezone: string;
+    currency: string;
+    language: string;
+  };
+  subscription?: {
+    planName: string;
+    expiryDate: string;
+    userLimit: number;
+    storageLimit: number; // in GB
+  };
+  permissions: string[];
+  createdAt: string;
+  lastAccessed?: string;
+}
+
+export interface UserTenant {
+  tenant: Tenant;
+  role: 'owner' | 'admin' | 'manager' | 'user' | 'viewer';
+  permissions: string[];
+  joinedAt: string;
+  lastAccessed?: string;
+  isDefault: boolean;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatar?: string;
+  tenants: UserTenant[];
+  currentTenantId?: string;
+  preferences: {
+    defaultTenant?: string;
+    theme: 'light' | 'dark' | 'auto';
+    notifications: boolean;
+  };
+  createdAt: string;
+  lastLogin?: string;
+}
+
 // Core application types
 export interface Theme {
   colors: {
